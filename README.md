@@ -5,10 +5,6 @@ A TypeScript library for transliterating text between Latin and [Javanese script
 > [!IMPORTANT]
 > **This library changes writing systems (Latin ↔ Javanese script), not languages. It's transliteration, not translation.**
 
-<div align="center">
-  <img src="illustrate.jpg" alt="Honocoroko Illustration" />
-</div>
-
 ## Installation
 
 ```bash
