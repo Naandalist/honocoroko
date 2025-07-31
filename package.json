@@ -1,0 +1,43 @@
+{
+  "name": "honocoroko",
+  "version": "1.0.0",
+  "description": "A TypeScript library for transliterating text between Latin and Javanese script (Aksara Jawa/Hanacaraka)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/test",
+    "test:watch": "node --test --watch dist/test",
+    "prepublishOnly": "npm run build && npm test",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "javanese",
+    "hanacaraka",
+    "honocoroko",
+    "aksara-jawa",
+    "transliteration",
+    "indonesia",
+    "jawa"
+  ],
+  "author": "Naandalist",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Naandalist/honocoroko.git"
+  },
+  "files": [
+    "dist",
+    "fonts",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
