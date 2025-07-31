@@ -14,7 +14,6 @@ npm install @naandalist/honocoroko
 ## Usage
 
 ```typescript
-```typescript
 import { toHonocoroko, fromHonocoroko, transliterate } from '@naandalist/honocoroko';
 
 // Convert Latin text to Javanese script
