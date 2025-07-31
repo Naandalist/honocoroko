@@ -8,13 +8,14 @@ A TypeScript library for transliterating text between Latin and [Javanese script
 ## Installation
 
 ```bash
-npm install honocoroko
+npm install @naandalist/honocoroko
 ```
 
 ## Usage
 
 ```typescript
-import { toHonocoroko, fromHonocoroko, transliterate } from 'honocoroko';
+```typescript
+import { toHonocoroko, fromHonocoroko, transliterate } from '@naandalist/honocoroko';
 
 // Convert Latin text to Javanese script
 const javanese = toHonocoroko('hanacaraka');
@@ -68,12 +69,12 @@ This package includes the HanacarakaFont.ttf in the `/fonts` directory for prope
 ### Installing the Font
 
 #### Windows
-1. Navigate to `node_modules/honocoroko/fonts/`
+1. Navigate to `node_modules/@naandalist/honocoroko/fonts/`
 2. Right-click on `.ttf`
 3. Select "Install" or "Install for all users"
 
 #### macOS
-1. Navigate to `node_modules/honocoroko/fonts/`
+1. Navigate to `node_modules/@naandalist/honocoroko/fonts/`
 2. Double-click on `.ttf`
 3. Click "Install Font" in the preview window
 
