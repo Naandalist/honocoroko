@@ -1,5 +1,5 @@
 // Main transliteration functions
-import { TransliterationDirection } from './types.js';
+import { TransliterationDirection, TransliterationOptions } from './types.js';
 import {
   allMappings,
   createReverseMappings,
@@ -12,6 +12,14 @@ import {
 
 // Create reverse mapping for fromHonocoroko
 const reverseMapping = createReverseMappings(allMappings);
+
+// Default characters to preserve (not convert to Hanacaraka)
+// Excludes characters that already have proper Javanese equivalents
+const DEFAULT_PRESERVE_CHARS = [
+  '?', '!', '@', '#', '$', '%', '^', '&', '*', 
+  '-', '_', '=', '+', '[', ']', '{', '}', '|', '\\', 
+  ';', "'", '<', '>', '/', '`', '~'
+];
 
 // Helper to check if a character is a consonant
 function isConsonant(char: string): boolean {
@@ -39,16 +47,25 @@ function getVowelMark(vowel: string): string {
 /**
  * Transliterates Latin text to Javanese script (Honocoroko/Hanacaraka)
  * @param text - The Latin text to transliterate
+ * @param options - Optional transliteration options
  * @returns The transliterated Javanese text
  */
-export function toHonocoroko(text: string): string {
+export function toHonocoroko(text: string, options?: TransliterationOptions): string {
   if (!text) return '';
   
+  const convertSpecialChars = options?.convertSpecialChars ?? false;
   let result = '';
   let i = 0;
   
   while (i < text.length) {
     const char = text[i];
+    
+    // Check if this character should be preserved unchanged (default behavior)
+    if (!convertSpecialChars && DEFAULT_PRESERVE_CHARS.includes(char)) {
+      result += char;
+      i++;
+      continue;
+    }
     
     // Handle whitespace
     if (/\s/.test(char)) {
@@ -173,15 +190,26 @@ export function toHonocoroko(text: string): string {
 /**
  * Transliterates Javanese script (Honocoroko/Hanacaraka) to Latin text
  * @param text - The Javanese text to transliterate
+ * @param options - Optional transliteration options
  * @returns The transliterated Latin text
  */
-export function fromHonocoroko(text: string): string {
+export function fromHonocoroko(text: string, options?: TransliterationOptions): string {
   if (!text) return '';
   
+  const convertSpecialChars = options?.convertSpecialChars ?? false;
   let result = '';
   let i = 0;
   
   while (i < text.length) {
+    const char = text[i];
+    
+    // Check if this character should be preserved unchanged (default behavior)
+    if (!convertSpecialChars && DEFAULT_PRESERVE_CHARS.includes(char)) {
+      result += char;
+      i++;
+      continue;
+    }
+    
     let matched = false;
     
     // Try to match longer sequences first (some Javanese characters are multi-codepoint)
@@ -218,12 +246,13 @@ export function fromHonocoroko(text: string): string {
  * Generic transliteration function that can go either direction
  * @param text - The text to transliterate
  * @param direction - The direction of transliteration
+ * @param options - Optional transliteration options
  * @returns The transliterated text
  */
-export function transliterate(text: string, direction: TransliterationDirection): string {
+export function transliterate(text: string, direction: TransliterationDirection, options?: TransliterationOptions): string {
   if (direction === 'toHonocoroko') {
-    return toHonocoroko(text);
+    return toHonocoroko(text, options);
   } else {
-    return fromHonocoroko(text);
+    return fromHonocoroko(text, options);
   }
 }

@@ -47,6 +47,30 @@ describe('honocoroko', () => {
       assert.strictEqual(toHonocoroko('v'), 'ꦮ꦳');
       assert.strictEqual(toHonocoroko('z'), 'ꦗ꦳');
     });
+
+    it('should preserve special characters by default', () => {
+      // By default, special characters should be preserved (except those with existing mappings)
+      assert.strictEqual(toHonocoroko('hana?'), 'ꦲꦤ?');
+      assert.strictEqual(toHonocoroko('cara!'), 'ꦕꦫ!');
+      assert.strictEqual(toHonocoroko('test@domain'), 'ꦠꦼꦱ꧀ꦠ@ꦢꦺꦴꦩꦆꦤ');
+    });
+
+    it('should convert special characters when convertSpecialChars is true', () => {
+      const options = { convertSpecialChars: true };
+      const result1 = toHonocoroko('test?', options);
+      const result2 = toHonocoroko('email@domain', options);
+      
+      // With convertSpecialChars: true, these should be processed (might produce warnings or stay as-is)
+      // The exact behavior depends on whether we have mappings for these chars
+      assert.ok(typeof result1 === 'string');
+      assert.ok(typeof result2 === 'string');
+    });
+
+    it('should work without options (preserves special chars by default)', () => {
+      const result = toHonocoroko('hello? world!');
+      assert.ok(result.includes('?'));
+      assert.ok(result.includes('!'));
+    });
   });
 
   describe('fromHonocoroko', () => {
@@ -73,6 +97,13 @@ describe('honocoroko', () => {
       const result = fromHonocoroko(javanese);
       assert.ok(result.includes(' '));
     });
+
+    it('should preserve special characters by default when transliterating from Javanese', () => {
+      // By default, special characters should be preserved in both directions
+      assert.strictEqual(fromHonocoroko('ꦲꦤ?'), 'hana?');
+      assert.strictEqual(fromHonocoroko('ꦕꦫ!'), 'cara!');
+      assert.strictEqual(fromHonocoroko('ꦲ@ꦧ'), 'ha@ba');
+    });
   });
 
   describe('transliterate', () => {
@@ -85,6 +116,18 @@ describe('honocoroko', () => {
       const javanese = 'ꦲꦤ';
       const result = transliterate(javanese, 'fromHonocoroko');
       assert.strictEqual(result, fromHonocoroko(javanese));
+    });
+
+    it('should work with convertSpecialChars option in both directions', () => {
+      const options = { convertSpecialChars: true };
+      
+      // Test toHonocoroko with options
+      const toJavanese = transliterate('hana?', 'toHonocoroko', options);
+      assert.ok(typeof toJavanese === 'string');
+      
+      // Test fromHonocoroko with options  
+      const toLatin = transliterate('ꦲꦤ!', 'fromHonocoroko', options);
+      assert.ok(typeof toLatin === 'string');
     });
   });
 

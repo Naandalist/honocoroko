@@ -11,13 +11,12 @@ A TypeScript library for transliterating text between Latin and [Javanese script
 npm install @naandalist/honocoroko
 ```
 
-**✅ Universal Compatibility:** This package works with both ES Modules (`import`) and CommonJS (`require`) out of the box.
 
 ## Usage
 
 ### Import Methods
 
-The package supports both **ESM (ES Modules)** and **CommonJS** for maximum compatibility:
+The package supports both **ESM (ES Modules)** and **CommonJS**:
 
 #### 🔥 ESM (Modern) - Recommended
 Use this in modern Node.js projects, TypeScript, Vite, or any bundler that supports ES modules:
@@ -49,30 +48,21 @@ const result1 = transliterate('hanacaraka', 'toHonocoroko');
 const result2 = transliterate('ꦲꦤꦕꦫꦏ', 'fromHonocoroko');
 ```
 
-### Environment-Specific Usage
-
-#### 📦 Node.js with ES Modules (package.json has `"type": "module"`)
-```typescript
-import { toHonocoroko } from '@naandalist/honocoroko';
-
-const result = toHonocoroko('selamat pagi');
-console.log(result); // ꦱꦼꦭꦩꦠ꧀ꦥꦒꦶ
-```
-
-#### 📜 Node.js with CommonJS (traditional Node.js)
-```javascript
-const { toHonocoroko } = require('@naandalist/honocoroko');
-
-const result = toHonocoroko('selamat pagi');
-console.log(result); // ꦱꦼꦭꦩꦠ꧀ꦥꦒꦶ
-```
-
 #### ⚡ TypeScript Projects
 ```typescript
-import { toHonocoroko, fromHonocoroko, TransliterationDirection } from '@naandalist/honocoroko';
+import { 
+  toHonocoroko, 
+  fromHonocoroko, 
+  TransliterationDirection, 
+  TransliterationOptions 
+} from '@naandalist/honocoroko';
 
 const javanese: string = toHonocoroko('hanacaraka');
 const latin: string = fromHonocoroko('ꦲꦤꦕꦫꦏ');
+
+// With options - opt-in to convert special characters
+const options: TransliterationOptions = { convertSpecialChars: true };
+const result: string = toHonocoroko('sapa iki?', options);
 ```
 
 #### 🌐 Browser/Bundlers (Webpack, Vite, etc.)
@@ -137,7 +127,7 @@ This package includes the HanacarakaFont.ttf in the `/fonts` directory for prope
 
 ## API
 
-### `toHonocoroko(text: string): string`
+### `toHonocoroko(text: string, options?: TransliterationOptions): string`
 Converts Latin text to Javanese script.
 
 ```typescript
@@ -145,7 +135,7 @@ const javanese = toHonocoroko('hanacaraka');
 // Returns: ꦲꦤꦕꦫꦏ
 ```
 
-### `fromHonocoroko(text: string): string`
+### `fromHonocoroko(text: string, options?: TransliterationOptions): string`
 Converts Javanese script back to Latin text.
 
 ```typescript
@@ -153,7 +143,7 @@ const latin = fromHonocoroko('ꦲꦤꦕꦫꦏ');
 // Returns: hanacaraka
 ```
 
-### `transliterate(text: string, direction: 'toHonocoroko' | 'fromHonocoroko'): string`
+### `transliterate(text: string, direction: 'toHonocoroko' | 'fromHonocoroko', options?: TransliterationOptions): string`
 Generic function that can transliterate in either direction.
 
 ```typescript
@@ -161,52 +151,60 @@ const result1 = transliterate('hanacaraka', 'toHonocoroko');
 const result2 = transliterate('ꦲꦤꦕꦫꦏ', 'fromHonocoroko');
 ```
 
-## Troubleshooting
+## Options
 
-### Import/Require Issues
+All transliteration functions accept an optional `options` parameter to customize behavior:
 
-**Problem**: Getting `Cannot use import statement outside a module` error?
-```javascript
-// ❌ Wrong - using import in CommonJS
-import { toHonocoroko } from '@naandalist/honocoroko';
+### `convertSpecialChars: boolean`
 
-// ✅ Right - use require in CommonJS
-const { toHonocoroko } = require('@naandalist/honocoroko');
-```
+By default, special characters like `?`, `!`, `@`, `.`, etc. are preserved unchanged during transliteration. Set `convertSpecialChars: true` to attempt converting these characters to Hanacaraka approximations.
 
-**Problem**: Getting `require is not defined` error?
 ```typescript
-// ❌ Wrong - using require in ESM
-const { toHonocoroko } = require('@naandalist/honocoroko');
+import { toHonocoroko, fromHonocoroko, transliterate } from '@naandalist/honocoroko';
 
-// ✅ Right - use import in ESM
-import { toHonocoroko } from '@naandalist/honocoroko';
+// Default behavior - preserves special characters
+const result1 = toHonocoroko('apa iki?');
+// Returns: ꦄꦥ ꦆꦏꦶ? (question mark preserved)
+
+const result2 = toHonocoroko('email@domain.com');
+// Returns: ꦌꦩꦆꦭ@ꦢꦺꦴꦩꦆꦤ.ꦕꦺꦴꦩ (@ and . preserved)
+
+// Opt-in to convert special characters
+const options = { convertSpecialChars: true };
+const result3 = toHonocoroko('test?', options);
+// Attempts to convert ? to Hanacaraka (may produce warnings if no mapping exists)
+
+// Works with all functions
+const result4 = transliterate('hello!', 'toHonocoroko', { convertSpecialChars: false });
+// Returns: ꦲꦼꦭ꧀ꦭꦺꦴ! (exclamation mark preserved - this is default)
 ```
 
-**Quick Check**: 
-- If your `package.json` has `"type": "module"` → use `import`
-- If your `package.json` doesn't have `"type": "module"` → use `require`
-- In TypeScript projects → use `import`
+### Function Signatures
 
-## Development
+```typescript
+toHonocoroko(text: string, options?: TransliterationOptions): string
+fromHonocoroko(text: string, options?: TransliterationOptions): string
+transliterate(text: string, direction: TransliterationDirection, options?: TransliterationOptions): string
 
-```bash
-# Install dependencies
-npm install
-
-# Build the project (creates both ESM and CommonJS builds)
-npm run build
-
-# Run tests
-npm test
-
-# Clean build artifacts
-npm run clean
+interface TransliterationOptions {
+  convertSpecialChars?: boolean; // Default: false (preserves special chars)
+}
 ```
 
-# Clean build artifacts
-npm run clean
+### Default Preserved Characters
+
+The following characters are preserved by default (when `convertSpecialChars` is `false` or not specified):
 ```
+? ! @ # $ % ^ & * - _ = + [ ] { } | \ ; ' < > / ` ~
+```
+
+**Note**: Characters like `,` `.` `:` `"` `(` `)` have proper Javanese equivalents and will always be converted:
+- `,` → `꧈`  
+- `.` → `꧉`  
+- `:` → `꧇`  
+- `"` → `꧊꧋`  
+- `(` → `꧌`  
+- `)` → `꧍`
 
 ## License
 
