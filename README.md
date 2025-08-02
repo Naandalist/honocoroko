@@ -14,7 +14,11 @@ npm install @naandalist/honocoroko
 ## Usage
 
 ```typescript
+// ESM (import)
 import { toHonocoroko, fromHonocoroko, transliterate } from '@naandalist/honocoroko';
+
+// CommonJS (require)
+const { toHonocoroko, fromHonocoroko, transliterate } = require('@naandalist/honocoroko');
 
 // Convert Latin text to Javanese script
 const javanese = toHonocoroko('hanacaraka');

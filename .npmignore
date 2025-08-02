@@ -1,6 +1,6 @@
 # Source files (only distribute built files)
 src/
-tsconfig.json
+tsconfig*.json
 
 # Development files
 .gitignore

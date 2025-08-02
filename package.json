@@ -1,14 +1,26 @@
 {
   "name": "@naandalist/honocoroko",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "A TypeScript library for transliterating text between Latin and Javanese script (Aksara Jawa/Hanacaraka)",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "test": "node --test dist/test",
-    "test:watch": "node --test --watch dist/test",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run build:types && npm run build:cjs-package",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:types": "tsc -p tsconfig.types.json",
+    "build:cjs-package": "echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
+    "test": "npm run build && node --test dist/esm/test",
+    "test:watch": "node --test --watch dist/esm/test",
     "prepublishOnly": "npm run build && npm test",
     "clean": "rm -rf dist"
   },
@@ -28,7 +40,9 @@
     "url": "https://github.com/Naandalist/honocoroko.git"
   },
   "files": [
-    "dist",
+    "dist/cjs",
+    "dist/esm", 
+    "dist/types",
     "fonts",
     "README.md",
     "LICENSE"
