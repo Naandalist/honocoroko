@@ -11,15 +11,31 @@ A TypeScript library for transliterating text between Latin and [Javanese script
 npm install @naandalist/honocoroko
 ```
 
+**✅ Universal Compatibility:** This package works with both ES Modules (`import`) and CommonJS (`require`) out of the box.
+
 ## Usage
 
+### Import Methods
+
+The package supports both **ESM (ES Modules)** and **CommonJS** for maximum compatibility:
+
+#### 🔥 ESM (Modern) - Recommended
+Use this in modern Node.js projects, TypeScript, Vite, or any bundler that supports ES modules:
+
 ```typescript
-// ESM (import)
 import { toHonocoroko, fromHonocoroko, transliterate } from '@naandalist/honocoroko';
+```
 
-// CommonJS (require)
+#### 🔧 CommonJS (Legacy)
+Use this in older Node.js projects or when `require()` is needed:
+
+```javascript
 const { toHonocoroko, fromHonocoroko, transliterate } = require('@naandalist/honocoroko');
+```
 
+### Basic Examples
+
+```typescript
 // Convert Latin text to Javanese script
 const javanese = toHonocoroko('hanacaraka');
 console.log(javanese); // ꦲꦤꦕꦫꦏ
@@ -33,14 +49,51 @@ const result1 = transliterate('hanacaraka', 'toHonocoroko');
 const result2 = transliterate('ꦲꦤꦕꦫꦏ', 'fromHonocoroko');
 ```
 
+### Environment-Specific Usage
+
+#### 📦 Node.js with ES Modules (package.json has `"type": "module"`)
+```typescript
+import { toHonocoroko } from '@naandalist/honocoroko';
+
+const result = toHonocoroko('selamat pagi');
+console.log(result); // ꦱꦼꦭꦩꦠ꧀ꦥꦒꦶ
+```
+
+#### 📜 Node.js with CommonJS (traditional Node.js)
+```javascript
+const { toHonocoroko } = require('@naandalist/honocoroko');
+
+const result = toHonocoroko('selamat pagi');
+console.log(result); // ꦱꦼꦭꦩꦠ꧀ꦥꦒꦶ
+```
+
+#### ⚡ TypeScript Projects
+```typescript
+import { toHonocoroko, fromHonocoroko, TransliterationDirection } from '@naandalist/honocoroko';
+
+const javanese: string = toHonocoroko('hanacaraka');
+const latin: string = fromHonocoroko('ꦲꦤꦕꦫꦏ');
+```
+
+#### 🌐 Browser/Bundlers (Webpack, Vite, etc.)
+```typescript
+import { toHonocoroko } from '@naandalist/honocoroko';
+
+// Works in React, Vue, Svelte, etc.
+const transliterated = toHonocoroko('basa jawa');
+```
+
 ## Features
 
+- ✅ **Universal Module Support** - Works with both ESM (`import`) and CommonJS (`require`)
 - ✅ Full support for basic Javanese consonants (Aksara Nglegena)
 - ✅ Vowels and vowel marks (Sandhangan)
 - ✅ Special consonants (Aksara Murda)
 - ✅ Javanese numerals (0-9)
 - ✅ Javanese punctuation
 - ✅ Phonetic approximations for Latin letters not in Javanese (f, v, z, q, x)
+- ✅ **TypeScript support** with full type definitions
+- ✅ **Zero dependencies** - lightweight and secure
 
 ## Supported Characters
 
@@ -87,11 +140,53 @@ This package includes the HanacarakaFont.ttf in the `/fonts` directory for prope
 ### `toHonocoroko(text: string): string`
 Converts Latin text to Javanese script.
 
+```typescript
+const javanese = toHonocoroko('hanacaraka');
+// Returns: ꦲꦤꦕꦫꦏ
+```
+
 ### `fromHonocoroko(text: string): string`
 Converts Javanese script back to Latin text.
 
+```typescript
+const latin = fromHonocoroko('ꦲꦤꦕꦫꦏ');
+// Returns: hanacaraka
+```
+
 ### `transliterate(text: string, direction: 'toHonocoroko' | 'fromHonocoroko'): string`
 Generic function that can transliterate in either direction.
+
+```typescript
+const result1 = transliterate('hanacaraka', 'toHonocoroko');
+const result2 = transliterate('ꦲꦤꦕꦫꦏ', 'fromHonocoroko');
+```
+
+## Troubleshooting
+
+### Import/Require Issues
+
+**Problem**: Getting `Cannot use import statement outside a module` error?
+```javascript
+// ❌ Wrong - using import in CommonJS
+import { toHonocoroko } from '@naandalist/honocoroko';
+
+// ✅ Right - use require in CommonJS
+const { toHonocoroko } = require('@naandalist/honocoroko');
+```
+
+**Problem**: Getting `require is not defined` error?
+```typescript
+// ❌ Wrong - using require in ESM
+const { toHonocoroko } = require('@naandalist/honocoroko');
+
+// ✅ Right - use import in ESM
+import { toHonocoroko } from '@naandalist/honocoroko';
+```
+
+**Quick Check**: 
+- If your `package.json` has `"type": "module"` → use `import`
+- If your `package.json` doesn't have `"type": "module"` → use `require`
+- In TypeScript projects → use `import`
 
 ## Development
 
@@ -99,11 +194,15 @@ Generic function that can transliterate in either direction.
 # Install dependencies
 npm install
 
-# Build the project
+# Build the project (creates both ESM and CommonJS builds)
 npm run build
 
 # Run tests
 npm test
+
+# Clean build artifacts
+npm run clean
+```
 
 # Clean build artifacts
 npm run clean
