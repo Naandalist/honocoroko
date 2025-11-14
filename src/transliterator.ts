@@ -45,16 +45,18 @@ function isVowel(char: string): boolean {
   return VOWEL_SET.has(char.toLowerCase());
 }
 
+// Vowel marks mapping (pre-created for performance)
+const VOWEL_MARKS: Record<string, string> = {
+  'i': 'ꦶ',     // wulu
+  'u': 'ꦸ',     // suku
+  'é': 'ꦺ',     // taling
+  'e': 'ꦼ',     // pepet
+  'o': 'ꦺꦴ',   // taling + tarung
+};
+
 // Helper to get vowel mark (sandhangan)
 function getVowelMark(vowel: string): string {
-  const marks: Record<string, string> = {
-    'i': 'ꦶ',     // wulu
-    'u': 'ꦸ',     // suku
-    'é': 'ꦺ',     // taling
-    'e': 'ꦼ',     // pepet
-    'o': 'ꦺꦴ',   // taling + tarung
-  };
-  return marks[vowel.toLowerCase()] || '';
+  return VOWEL_MARKS[vowel.toLowerCase()] || '';
 }
 
 /**
