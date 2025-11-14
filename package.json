@@ -1,7 +1,7 @@
 {
   "name": "@naandalist/honocoroko",
-  "version": "1.2.0",
-  "description": "A TypeScript library for transliterating text between Latin and Javanese script (Aksara Jawa/Hanacaraka)",
+  "version": "1.2.1",
+  "description": "TypeScript library for transliterating text between Latin and Javanese script (Aksara Jawa/Hanacaraka)",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
@@ -21,6 +21,7 @@
     "build:cjs-package": "echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "test": "npm run build && node --test dist/esm/test",
     "test:watch": "node --test --watch dist/esm/test",
+    "test:local": "npm run build && node example/local-test.js",
     "prepublishOnly": "npm run build && npm test",
     "clean": "rm -rf dist"
   },
