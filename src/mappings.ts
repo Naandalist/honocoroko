@@ -166,3 +166,61 @@ export const allMappings = [
   ...specialMarks,
   ...phoneticApproximations,
 ];
+
+// Create Map-based lookups for O(1) performance
+export function createLatinToJavaneseMap(): Map<string, string> {
+  const map = new Map<string, string>();
+  
+  // Add all mappings, later entries with same key will override earlier ones
+  // This maintains the priority: specific mappings override general ones
+  allMappings.forEach(({ latin, javanese }) => {
+    map.set(latin.toLowerCase(), javanese);
+  });
+  
+  return map;
+}
+
+// Create Map for quick consonant lookups
+export function createConsonantMap(): Map<string, string> {
+  const map = new Map<string, string>();
+  consonants.forEach(({ latin, javanese }) => {
+    map.set(latin.toLowerCase(), javanese);
+  });
+  return map;
+}
+
+// Create Map for vowel lookups
+export function createVowelMap(): Map<string, string> {
+  const map = new Map<string, string>();
+  vowels.forEach(({ latin, javanese }) => {
+    map.set(latin.toLowerCase(), javanese);
+  });
+  return map;
+}
+
+// Create Map for number lookups
+export function createNumberMap(): Map<string, string> {
+  const map = new Map<string, string>();
+  numbers.forEach(({ latin, javanese }) => {
+    map.set(latin, javanese);
+  });
+  return map;
+}
+
+// Create Map for punctuation lookups
+export function createPunctuationMap(): Map<string, string> {
+  const map = new Map<string, string>();
+  punctuation.forEach(({ latin, javanese }) => {
+    map.set(latin, javanese);
+  });
+  return map;
+}
+
+// Create Map for phonetic approximations
+export function createPhoneticMap(): Map<string, string> {
+  const map = new Map<string, string>();
+  phoneticApproximations.forEach(({ latin, javanese }) => {
+    map.set(latin.toLowerCase(), javanese);
+  });
+  return map;
+}

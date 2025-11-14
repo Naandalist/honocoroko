@@ -3,33 +3,46 @@ import { TransliterationDirection, TransliterationOptions } from './types.js';
 import {
   allMappings,
   createReverseMappings,
-  consonants,
-  vowels,
-  numbers,
-  punctuation,
-  phoneticApproximations,
+  createConsonantMap,
+  createVowelMap,
+  createNumberMap,
+  createPunctuationMap,
+  createPhoneticMap,
 } from './mappings.js';
 
 // Create reverse mapping for fromHonocoroko
 const reverseMapping = createReverseMappings(allMappings);
 
+// Create Map-based lookups for O(1) performance
+const consonantMap = createConsonantMap();
+const vowelMap = createVowelMap();
+const numberMap = createNumberMap();
+const punctuationMap = createPunctuationMap();
+const phoneticMap = createPhoneticMap();
+
+// Pre-compile regex patterns for better performance
+const WHITESPACE_REGEX = /\s/;
+const CONSONANT_REGEX = /^[bcdfghjklmnpqrstvwxyz]$/i;
+const VOWEL_SET = new Set(['a', 'i', 'u', 'e', 'é', 'o']);
+
 // Default characters to preserve (not convert to Hanacaraka)
 // Excludes characters that already have proper Javanese equivalents
-const DEFAULT_PRESERVE_CHARS = [
+const DEFAULT_PRESERVE_CHARS = new Set([
   '?', '!', '@', '#', '$', '%', '^', '&', '*', 
   '-', '_', '=', '+', '[', ']', '{', '}', '|', '\\', 
   ';', "'", '<', '>', '/', '`', '~'
-];
+]);
 
 // Helper to check if a character is a consonant
 function isConsonant(char: string): boolean {
-  return consonants.some(c => c.latin === char || c.latin === char + 'a') || 
-         /^[bcdfghjklmnpqrstvwxyz]$/i.test(char);
+  return consonantMap.has(char.toLowerCase()) || 
+         consonantMap.has(char.toLowerCase() + 'a') || 
+         CONSONANT_REGEX.test(char);
 }
 
 // Helper to check if a character is a vowel
 function isVowel(char: string): boolean {
-  return ['a', 'i', 'u', 'e', 'é', 'o'].includes(char.toLowerCase());
+  return VOWEL_SET.has(char.toLowerCase());
 }
 
 // Helper to get vowel mark (sandhangan)
@@ -61,41 +74,41 @@ export function toHonocoroko(text: string, options?: TransliterationOptions): st
     const char = text[i];
     
     // Check if this character should be preserved unchanged (default behavior)
-    if (!convertSpecialChars && DEFAULT_PRESERVE_CHARS.includes(char)) {
+    if (!convertSpecialChars && DEFAULT_PRESERVE_CHARS.has(char)) {
       result += char;
       i++;
       continue;
     }
     
     // Handle whitespace
-    if (/\s/.test(char)) {
+    if (WHITESPACE_REGEX.test(char)) {
       result += char;
       i++;
       continue;
     }
     
-    // Handle numbers
-    const numberMapping = numbers.find(n => n.latin === char);
-    if (numberMapping) {
-      result += numberMapping.javanese;
+    // Handle numbers - use Map for O(1) lookup
+    const numberJavanese = numberMap.get(char);
+    if (numberJavanese) {
+      result += numberJavanese;
       i++;
       continue;
     }
     
-    // Handle punctuation
-    const punctMapping = punctuation.find(p => p.latin === char);
-    if (punctMapping) {
-      result += punctMapping.javanese;
+    // Handle punctuation - use Map for O(1) lookup
+    const punctJavanese = punctuationMap.get(char);
+    if (punctJavanese) {
+      result += punctJavanese;
       i++;
       continue;
     }
     
     // Handle consonant clusters (nga, nya, dha, tha)
     if (i + 2 < text.length) {
-      const threeChar = text.substr(i, 3);
-      const mapping = consonants.find(c => c.latin === threeChar);
+      const threeChar = text.slice(i, i + 3);
+      const mapping = consonantMap.get(threeChar.toLowerCase());
       if (mapping) {
-        result += mapping.javanese;
+        result += mapping;
         i += 3;
         continue;
       }
@@ -103,11 +116,11 @@ export function toHonocoroko(text: string, options?: TransliterationOptions): st
     
     // Handle two-character consonants (ka, ba, etc.) or consonant + vowel
     if (i + 1 < text.length) {
-      const twoChar = text.substr(i, 2);
-      const consonantMapping = consonants.find(c => c.latin === twoChar);
+      const twoChar = text.slice(i, i + 2);
+      const consonantJavanese = consonantMap.get(twoChar.toLowerCase());
       
-      if (consonantMapping) {
-        result += consonantMapping.javanese;
+      if (consonantJavanese) {
+        result += consonantJavanese;
         i += 2;
         continue;
       }
@@ -116,9 +129,9 @@ export function toHonocoroko(text: string, options?: TransliterationOptions): st
       const nextChar = text[i + 1];
       if (isVowel(nextChar)) {
         // First try to find the consonant with 'a' appended
-        const consonantWithA = consonants.find(c => c.latin === char + 'a');
+        const consonantWithA = consonantMap.get((char + 'a').toLowerCase());
         if (consonantWithA) {
-          result += consonantWithA.javanese;
+          result += consonantWithA;
           if (nextChar !== 'a') {
             result += getVowelMark(nextChar);
           }
@@ -127,9 +140,9 @@ export function toHonocoroko(text: string, options?: TransliterationOptions): st
         }
         
         // Fallback to single consonant
-        const consonantOnly = consonants.find(c => c.latin === char);
+        const consonantOnly = consonantMap.get(char.toLowerCase());
         if (consonantOnly) {
-          result += consonantOnly.javanese;
+          result += consonantOnly;
           if (nextChar !== 'a') {
             result += getVowelMark(nextChar);
           }
@@ -140,9 +153,9 @@ export function toHonocoroko(text: string, options?: TransliterationOptions): st
     }
     
     // Handle single character consonants
-    const consonantWithA = consonants.find(c => c.latin === char + 'a');
+    const consonantWithA = consonantMap.get((char + 'a').toLowerCase());
     if (consonantWithA) {
-      result += consonantWithA.javanese;
+      result += consonantWithA;
       // Add pangkon if followed by another consonant
       if (i + 1 < text.length && isConsonant(text[i + 1])) {
         result += '꧀'; // pangkon
@@ -151,9 +164,9 @@ export function toHonocoroko(text: string, options?: TransliterationOptions): st
       continue;
     }
     
-    const singleConsonant = consonants.find(c => c.latin === char);
+    const singleConsonant = consonantMap.get(char.toLowerCase());
     if (singleConsonant) {
-      result += singleConsonant.javanese;
+      result += singleConsonant;
       // Add pangkon if followed by another consonant
       if (i + 1 < text.length && isConsonant(text[i + 1])) {
         result += '꧀'; // pangkon
@@ -162,18 +175,18 @@ export function toHonocoroko(text: string, options?: TransliterationOptions): st
       continue;
     }
     
-    // Handle standalone vowels
-    const vowelMapping = vowels.find(v => v.latin === char);
-    if (vowelMapping) {
-      result += vowelMapping.javanese;
+    // Handle standalone vowels - use Map for O(1) lookup
+    const vowelJavanese = vowelMap.get(char.toLowerCase());
+    if (vowelJavanese) {
+      result += vowelJavanese;
       i++;
       continue;
     }
     
-    // Handle phonetic approximations
-    const approx = phoneticApproximations.find(p => p.latin.toLowerCase() === char.toLowerCase());
-    if (approx) {
-      result += approx.javanese;
+    // Handle phonetic approximations - use Map for O(1) lookup
+    const phoneticJavanese = phoneticMap.get(char.toLowerCase());
+    if (phoneticJavanese) {
+      result += phoneticJavanese;
       i++;
       continue;
     }
@@ -204,7 +217,7 @@ export function fromHonocoroko(text: string, options?: TransliterationOptions): 
     const char = text[i];
     
     // Check if this character should be preserved unchanged (default behavior)
-    if (!convertSpecialChars && DEFAULT_PRESERVE_CHARS.includes(char)) {
+    if (!convertSpecialChars && DEFAULT_PRESERVE_CHARS.has(char)) {
       result += char;
       i++;
       continue;
@@ -215,10 +228,11 @@ export function fromHonocoroko(text: string, options?: TransliterationOptions): 
     // Try to match longer sequences first (some Javanese characters are multi-codepoint)
     for (let len = 4; len >= 1; len--) {
       if (i + len <= text.length) {
-        const substr = text.substr(i, len);
+        const substr = text.slice(i, i + len);
         
-        if (reverseMapping.has(substr)) {
-          result += reverseMapping.get(substr)!;
+        const latinChar = reverseMapping.get(substr);
+        if (latinChar) {
+          result += latinChar;
           i += len;
           matched = true;
           break;
@@ -229,7 +243,7 @@ export function fromHonocoroko(text: string, options?: TransliterationOptions): 
     // If no match found, keep the character as-is
     if (!matched) {
       const char = text[i];
-      if (/\s/.test(char)) {
+      if (WHITESPACE_REGEX.test(char)) {
         result += char;
       } else {
         console.warn(`No reverse mapping found for character: ${char} (U+${char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')})`);
