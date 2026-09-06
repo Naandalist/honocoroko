@@ -46,7 +46,6 @@
     "dist/cjs/package.json",
     "dist/esm/*.js",
     "dist/types/*.d.ts",
-    "fonts",
     "README.md",
     "LICENSE"
   ],

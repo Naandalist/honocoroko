@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.2.1-blue.svg)](https://github.com/Naandalist/honocoroko)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6.svg)](https://www.typescriptlang.org/)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen.svg)](https://nodejs.org)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A TypeScript library for transliterating text between Latin and [Javanese script (Aksara Jawa/Hanacaraka)](https://id.wikipedia.org/wiki/Hanacaraka).
@@ -115,19 +115,21 @@ const transliterated = toHonocoroko('basa jawa');
 
 ## Font Support
 
-This package includes the HanacarakaFont.ttf in the `/fonts` directory for proper display of Javanese script.
+This package does **not** ship a Javanese font. Transliteration returns Unicode text; display is up to the font on the system or page.
 
-### Installing the Font
+Use a licensed Unicode Aksara Jawa font, for example:
 
-#### Windows
-1. Navigate to `node_modules/@naandalist/honocoroko/fonts/`
-2. Right-click on `.ttf`
-3. Select "Install" or "Install for all users"
+- [Noto Sans Javanese](https://fonts.google.com/noto/specimen/Noto+Sans+Javanese) (SIL Open Font License)
+- [nyk Ngayogyan](https://aksaradinusantara.com/fonta/nyk-ngayogyan.font) (Apri Nugroho / Dinas Kebudayaan DIY)
 
-#### macOS
-1. Navigate to `node_modules/@naandalist/honocoroko/fonts/`
-2. Double-click on `.ttf`
-3. Click "Install Font" in the preview window
+On the web:
+
+```html
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Javanese&display=swap">
+<style>
+  .aksara { font-family: "Noto Sans Javanese", sans-serif; }
+</style>
+```
 
 
 ## API
@@ -200,7 +202,7 @@ interface TransliterationOptions {
 
 The following characters are preserved by default (when `convertSpecialChars` is `false` or not specified):
 ```
-? ! @ # $ % ^ & * - _ = + [ ] { } | \ ; ' < > / ` ~
+? ! @ # $ % ^ & * - _ = + [ ] { } | \\ ; ' < > / ` ~
 ```
 
 **Note**: Characters like `,` `.` `:` `"` `(` `)` have proper Javanese equivalents and will always be converted:

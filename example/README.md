@@ -95,15 +95,15 @@ npm run build
 ```
 
 ### Javanese characters not displaying correctly
-**Solution**: Install the HanacarakaFont.ttf from the `/fonts` directory:
-- **Windows**: Right-click → Install
-- **macOS**: Double-click → Install Font
-- **Linux**: Copy to `~/.fonts/` and run `fc-cache -f -v`
+**Solution**: Install a Unicode Javanese font. This package does not bundle one.
+
+- [Noto Sans Javanese](https://fonts.google.com/noto/specimen/Noto+Sans+Javanese)
+- [nyk Ngayogyan](https://aksaradinusantara.com/fonta/nyk-ngayogyan.font)
 
 ### Tests failing
 **Solution**: 
 1. Make sure you've built the library with `npm run build`
-2. Check that you're running Node.js v14.0.0 or higher
+2. Check that you're running Node.js v18.0.0 or higher
 3. Run the official test suite: `npm test`
 
 ## Creating Your Own Tests
