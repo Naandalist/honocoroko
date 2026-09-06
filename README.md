@@ -4,6 +4,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6.svg)](https://www.typescriptlang.org/)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/Naandalist/honocoroko/actions/workflows/ci.yml/badge.svg)](https://github.com/Naandalist/honocoroko/actions/workflows/ci.yml)
 
 A TypeScript library for transliterating text between Latin and [Javanese script (Aksara Jawa/Hanacaraka)](https://id.wikipedia.org/wiki/Hanacaraka).
 
@@ -149,6 +150,17 @@ toHonocoroko('apa§', { convertSpecialChars: true, strict: true });
 ```
 
 `toHonocoroko('hana?', { strict: true })` does not throw — `?` is a preserved character.
+
+## Releasing
+
+See [CHANGELOG.md](CHANGELOG.md).
+
+1. Bump `version` in `package.json`.
+2. Move the `[Unreleased]` notes in `CHANGELOG.md` under the new version heading.
+3. Merge to `main`.
+4. Create a GitHub Release whose tag is `vX.Y.Z` (example: `v1.2.2`).
+
+`publish.yml` runs only on that published Release. Tag and `package.json` version must match.
 
 ## License
 

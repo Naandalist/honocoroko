@@ -1,3 +1,7 @@
+# Publishes @naandalist/honocoroko when a GitHub Release is published.
+# The Release tag MUST be vX.Y.Z and match package.json version
+# (example: tag v1.2.2 for "version": "1.2.2").
+# Requires repository secret NPM_TOKEN.
 name: Publish to npm
 
 on:
