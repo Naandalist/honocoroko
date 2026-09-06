@@ -16,7 +16,7 @@ const phoneticMap = createPhoneticMap();
 
 const WHITESPACE_REGEX = /\s/;
 const CONSONANT_REGEX = /^[bcdfghjklmnpqrstvwxyz]$/i;
-const VOWEL_SET = new Set(['a', 'i', 'u', 'e', 'é', 'o']);
+const VOWEL_SET = new Set(['a', 'i', 'u', 'e', 'é', 'è', 'o']);
 
 const DEFAULT_PRESERVE_CHARS = new Set([
   '?', '!', '@', '#', '$', '%', '^', '&', '*',
@@ -38,9 +38,13 @@ const VOWEL_MARKS: Record<string, string> = {
   'i': 'ꦶ',
   'u': 'ꦸ',
   'é': 'ꦺ',
+  'è': 'ꦺ',
   'e': 'ꦼ',
   'o': 'ꦺꦴ',
 };
+
+const CAKRA = 'ꦿ';
+const PENGKAL = 'ꦾ';
 
 function getVowelMark(vowel: string): string {
   return VOWEL_MARKS[vowel.toLowerCase()] || '';
@@ -133,6 +137,20 @@ export function toHonocoroko(text: string, options?: TransliterationOptions): st
         result += mapping;
         i += 3;
         continue;
+      }
+
+      const mid = text[i + 1].toLowerCase();
+      const vowel = text[i + 2];
+      if ((mid === 'r' || mid === 'y') && isVowel(vowel)) {
+        const onset = consonantMap.get((char + 'a').toLowerCase()) || consonantMap.get(char.toLowerCase());
+        if (onset) {
+          result += onset + (mid === 'r' ? CAKRA : PENGKAL);
+          if (vowel.toLowerCase() !== 'a') {
+            result += getVowelMark(vowel);
+          }
+          i += 3;
+          continue;
+        }
       }
     }
 
@@ -355,23 +373,27 @@ export function fromHonocoroko(text: string, options?: TransliterationOptions): 
     if (aksara[char]) {
       const { base, withA } = aksara[char];
       i += 1;
+      let cluster = '';
+      if (text[i] === CAKRA) { cluster = 'r'; i += 1; }
+      else if (text[i] === PENGKAL) { cluster = 'y'; i += 1; }
+      const onset = cluster ? base + cluster : base;
       if (text[i] === TALING && text[i + 1] === TARUNG) {
-        result += base + 'o';
+        result += onset + 'o';
         i += 2;
         continue;
       }
       const mark = sandhangan[text[i]];
       if (mark) {
-        result += base + mark;
+        result += onset + mark;
         i += 1;
         continue;
       }
       if (text[i] === PANGKON) {
-        result += base;
+        result += onset;
         i += 1;
         continue;
       }
-      result += withA;
+      result += cluster ? onset + 'a' : withA;
       continue;
     }
 
