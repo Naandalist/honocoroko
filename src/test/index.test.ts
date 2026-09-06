@@ -5,6 +5,7 @@ import { toHonocoroko, fromHonocoroko, transliterate } from '../index.js';
 import {
   toHonocorokoFixtures,
   workingRoundTrip,
+  workingSyllableRoundTrip,
   brokenRoundTrip,
 } from './fixtures.js';
 
@@ -97,6 +98,18 @@ describe('honocoroko', () => {
       assert.strictEqual(fromHonocoroko('ꦏ'), 'ka');
     });
 
+    it('folds sandhangan into the syllable', () => {
+      assert.strictEqual(fromHonocoroko('ꦧꦶ'), 'bi');
+      assert.strictEqual(fromHonocoroko('ꦧꦸ'), 'bu');
+      assert.strictEqual(fromHonocoroko('ꦧꦼ'), 'be');
+      assert.strictEqual(fromHonocoroko('ꦧꦺꦴ'), 'bo');
+    });
+
+    it('treats pangkon as vowel killer, not slash', () => {
+      assert.strictEqual(fromHonocoroko('ꦧꦏ꧀ꦱꦺꦴ'), 'bakso');
+      assert.ok(!fromHonocoroko('ꦧꦏ꧀ꦱꦺꦴ').includes('/'));
+    });
+
     it('maps Javanese numbers back to Latin', () => {
       assert.strictEqual(fromHonocoroko('꧐'), '0');
       assert.strictEqual(fromHonocoroko('꧑'), '1');
@@ -136,7 +149,15 @@ describe('honocoroko', () => {
     }
   });
 
-  describe('round-trip transliteration (blocked by #9)', () => {
+  describe('round-trip transliteration (syllable-aware, #9)', () => {
+    for (const original of workingSyllableRoundTrip) {
+      it(`round-trips "${original}"`, () => {
+        assert.strictEqual(fromHonocoroko(toHonocoroko(original)), original);
+      });
+    }
+  });
+
+  describe('round-trip transliteration (blocked by later 1.3.0 issues)', () => {
     for (const { latin, reason } of brokenRoundTrip) {
       it.skip(`round-trips "${latin}" — ${reason}`, () => {
         assert.strictEqual(fromHonocoroko(toHonocoroko(latin)), latin);
