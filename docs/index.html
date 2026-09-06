@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>honocoroko — Latin ↔ Aksara Jawa</title>
+  <meta name="description" content="Live transliteration between Latin and Javanese script. Not a translator.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+Javanese:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="top">
+    <div>
+      <p class="eyebrow">@naandalist/honocoroko</p>
+      <h1>Latin ↔ Aksara Jawa</h1>
+    </div>
+    <p class="warn">Transliteration, not translation. This changes the writing system, not the meaning of the words.</p>
+  </header>
+
+  <main>
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="Direction">
+        <button type="button" id="dir-to" class="on" data-dir="to">Latin → Jawa</button>
+        <button type="button" id="dir-from" data-dir="from">Jawa → Latin</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="useMurda"> useMurda</label>
+      <label class="chk"><input type="checkbox" id="useSwara" checked> useSwara</label>
+    </div>
+
+    <section class="grid">
+      <div class="pane">
+        <div class="pane-head">
+          <label for="input" id="input-label">Latin</label>
+          <button type="button" id="copy-in" class="ghost">Copy</button>
+        </div>
+        <textarea id="input" spellcheck="false" rows="6" placeholder="hanacaraka"></textarea>
+      </div>
+      <div class="pane">
+        <div class="pane-head">
+          <span id="output-label">Aksara Jawa</span>
+          <button type="button" id="copy-out" class="ghost">Copy</button>
+        </div>
+        <pre id="output" class="aksara" aria-live="polite"></pre>
+      </div>
+    </section>
+
+    <p id="status" class="status" hidden></p>
+
+    <div class="chips" id="chips">
+      <button type="button" data-q="hanacaraka">hanacaraka</button>
+      <button type="button" data-q="bisa">bisa</button>
+      <button type="button" data-q="bakso">bakso</button>
+      <button type="button" data-q="wong">wong</button>
+      <button type="button" data-q="besar">besar</button>
+      <button type="button" data-q="rumah">rumah</button>
+      <button type="button" data-q="kra">kra</button>
+      <button type="button" data-q="sri">sri</button>
+    </div>
+
+    <aside class="install">
+      <p>Use it in a project</p>
+      <code>npm i @naandalist/honocoroko</code>
+      <p class="links">
+        <a href="https://www.npmjs.com/package/@naandalist/honocoroko">npm</a>
+        ·
+        <a href="https://github.com/Naandalist/honocoroko">GitHub</a>
+      </p>
+    </aside>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
