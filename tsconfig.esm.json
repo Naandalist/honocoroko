@@ -7,5 +7,5 @@
     "outDir": "./dist/esm",
     "declaration": false
   },
-  "exclude": ["dist", "node_modules"]
+  "exclude": ["dist", "node_modules", "src/test"]
 }
