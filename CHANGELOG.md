@@ -7,6 +7,12 @@ Versioning follows [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+Planned as **1.4.0**.
+
+### Added
+
+- GitHub Pages playground at `/docs` ([#13](https://github.com/Naandalist/honocoroko/issues/13)).
+
 ## [1.3.0] - 2026-09-06
 
 ### Fixed
