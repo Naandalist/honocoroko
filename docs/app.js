@@ -14,7 +14,7 @@ const I18N = {
     copied: 'Copied',
     copyFail: 'Copy failed',
     install: 'Use it in a project',
-    credit: 'Made by',
+    credit: 'Created by',
   },
   id: {
     title: 'Latin ↔ Aksara Jawa',
