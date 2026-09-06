@@ -1,8 +1,6 @@
 // Main transliteration functions
 import { TransliterationDirection, TransliterationOptions } from './types.js';
 import {
-  allMappings,
-  createReverseMappings,
   createConsonantMap,
   createVowelMap,
   createNumberMap,
@@ -10,7 +8,6 @@ import {
   createPhoneticMap,
 } from './mappings.js';
 
-const reverseMapping = createReverseMappings(allMappings);
 const consonantMap = createConsonantMap();
 const vowelMap = createVowelMap();
 const numberMap = createNumberMap();
@@ -191,6 +188,68 @@ export function fromHonocoroko(text: string, options?: TransliterationOptions): 
   let result = '';
   let i = 0;
 
+  const PANGKON = '꧀';
+  const CECAK_TELU = '꦳';
+  const TALING = 'ꦺ';
+  const TARUNG = 'ꦴ';
+
+  const sandhangan: Record<string, string> = {
+    'ꦶ': 'i',
+    'ꦸ': 'u',
+    'ꦼ': 'e',
+    'ꦺ': 'é',
+  };
+
+  const aksara: Record<string, { base: string; withA: string }> = {
+    'ꦲ': { base: 'h', withA: 'ha' },
+    'ꦤ': { base: 'n', withA: 'na' },
+    'ꦕ': { base: 'c', withA: 'ca' },
+    'ꦫ': { base: 'r', withA: 'ra' },
+    'ꦏ': { base: 'k', withA: 'ka' },
+    'ꦢ': { base: 'd', withA: 'da' },
+    'ꦠ': { base: 't', withA: 'ta' },
+    'ꦱ': { base: 's', withA: 'sa' },
+    'ꦮ': { base: 'w', withA: 'wa' },
+    'ꦭ': { base: 'l', withA: 'la' },
+    'ꦥ': { base: 'p', withA: 'pa' },
+    'ꦝ': { base: 'dh', withA: 'dha' },
+    'ꦗ': { base: 'j', withA: 'ja' },
+    'ꦪ': { base: 'y', withA: 'ya' },
+    'ꦚ': { base: 'ny', withA: 'nya' },
+    'ꦩ': { base: 'm', withA: 'ma' },
+    'ꦒ': { base: 'g', withA: 'ga' },
+    'ꦧ': { base: 'b', withA: 'ba' },
+    'ꦛ': { base: 'th', withA: 'tha' },
+    'ꦔ': { base: 'ng', withA: 'nga' },
+  };
+
+  const phoneticOnset: Record<string, string> = {
+    'ꦥ': 'f',
+    'ꦮ': 'v',
+    'ꦗ': 'z',
+  };
+
+  function takeVowelOrPangkon(onset: string): string {
+    if (i >= text.length) return onset;
+    if (text[i] === TALING && text[i + 1] === TARUNG) {
+      i += 2;
+      return onset + 'o';
+    }
+    const mark = sandhangan[text[i]];
+    if (mark) {
+      i += 1;
+      return onset + mark;
+    }
+    if (text[i] === PANGKON) {
+      i += 1;
+      return onset;
+    }
+    if (onset.length === 1 && 'fvz'.includes(onset)) {
+      return onset;
+    }
+    return onset + 'a';
+  }
+
   while (i < text.length) {
     const char = text[i];
 
@@ -200,30 +259,84 @@ export function fromHonocoroko(text: string, options?: TransliterationOptions): 
       continue;
     }
 
-    let matched = false;
-
-    for (let len = 4; len >= 1; len--) {
-      if (i + len <= text.length) {
-        const substr = text.slice(i, i + len);
-        const latinChar = reverseMapping.get(substr);
-        if (latinChar) {
-          result += latinChar;
-          i += len;
-          matched = true;
-          break;
-        }
-      }
-    }
-
-    if (!matched) {
-      const current = text[i];
-      if (WHITESPACE_REGEX.test(current)) {
-        result += current;
-      } else {
-        result += handleUnmapped(current, strict);
-      }
+    if (WHITESPACE_REGEX.test(char)) {
+      result += char;
       i++;
+      continue;
     }
+
+    const numberLatin = [...numberMap.entries()].find(([, j]) => j === char)?.[0];
+    if (numberLatin) {
+      result += numberLatin;
+      i++;
+      continue;
+    }
+
+    let punctMatched = false;
+    for (const [latin, javanese] of punctuationMap.entries()) {
+      if (text.startsWith(javanese, i)) {
+        result += latin;
+        i += javanese.length;
+        punctMatched = true;
+        break;
+      }
+    }
+    if (punctMatched) continue;
+
+    if (aksara[char] && text[i + 1] === CECAK_TELU && phoneticOnset[char]) {
+      i += 2;
+      result += takeVowelOrPangkon(phoneticOnset[char]);
+      continue;
+    }
+
+    if (aksara[char]) {
+      const { base, withA } = aksara[char];
+      i += 1;
+      if (text[i] === TALING && text[i + 1] === TARUNG) {
+        result += base + 'o';
+        i += 2;
+        continue;
+      }
+      const mark = sandhangan[text[i]];
+      if (mark) {
+        result += base + mark;
+        i += 1;
+        continue;
+      }
+      if (text[i] === PANGKON) {
+        result += base;
+        i += 1;
+        continue;
+      }
+      result += withA;
+      continue;
+    }
+
+    if (char === TALING && text[i + 1] === TARUNG) {
+      result += 'o';
+      i += 2;
+      continue;
+    }
+    if (sandhangan[char]) {
+      result += sandhangan[char];
+      i += 1;
+      continue;
+    }
+
+    const vowelLatin = [...vowelMap.entries()].find(([, j]) => j === char)?.[0];
+    if (vowelLatin) {
+      result += vowelLatin;
+      i += 1;
+      continue;
+    }
+
+    if (char === 'ꦁ') { result += 'ng'; i += 1; continue; }
+    if (char === 'ꦂ') { result += 'r'; i += 1; continue; }
+    if (char === 'ꦃ') { result += 'h'; i += 1; continue; }
+    if (char === PANGKON) { i += 1; continue; }
+
+    result += handleUnmapped(char, strict);
+    i += 1;
   }
 
   return result;
