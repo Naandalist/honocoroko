@@ -7,5 +7,5 @@
     "outDir": "./dist/cjs",
     "declaration": false
   },
-  "exclude": ["dist", "node_modules", "**/*.test.ts"]
+  "exclude": ["dist", "node_modules", "src/test"]
 }

@@ -7,9 +7,9 @@
   "types": "dist/types/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "types": "./dist/types/index.d.ts"
+      "require": "./dist/cjs/index.js"
     }
   },
   "type": "module",
@@ -19,8 +19,9 @@
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:types": "tsc -p tsconfig.types.json",
     "build:cjs-package": "echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
-    "test": "npm run build && node --test dist/esm/test/*.test.js",
-    "test:watch": "node --test --watch dist/esm/test/*.test.js",
+    "build:test": "tsc -p tsconfig.test.json",
+    "test": "npm run build && npm run build:test && node --test dist/esm/test/*.test.js",
+    "test:watch": "npm run build:test && node --test --watch dist/esm/test/*.test.js",
     "test:local": "npm run build && node example/local-test.js",
     "prepublishOnly": "npm run build && npm test",
     "clean": "rm -rf dist"
@@ -41,15 +42,16 @@
     "url": "https://github.com/Naandalist/honocoroko.git"
   },
   "files": [
-    "dist/cjs",
-    "dist/esm",
-    "dist/types",
+    "dist/cjs/*.js",
+    "dist/cjs/package.json",
+    "dist/esm/*.js",
+    "dist/types/*.d.ts",
     "fonts",
     "README.md",
     "LICENSE"
   ],
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "publishConfig": {
     "access": "public"

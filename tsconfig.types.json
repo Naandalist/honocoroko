@@ -5,5 +5,5 @@
     "emitDeclarationOnly": true,
     "outDir": "./dist/types"
   },
-  "exclude": ["dist", "node_modules", "**/*.test.ts"]
+  "exclude": ["dist", "node_modules", "src/test"]
 }
