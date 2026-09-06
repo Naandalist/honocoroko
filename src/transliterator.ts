@@ -139,6 +139,24 @@ export function toHonocoroko(text: string, options?: TransliterationOptions): st
       }
     }
 
+    const rest2 = text.slice(i, i + 2).toLowerCase();
+    const afterNg = text[i + 2];
+    if (rest2 === 'ng' && (afterNg === undefined || !isVowel(afterNg))) {
+      result += 'ꦁ';
+      i += 2;
+      continue;
+    }
+    if (char.toLowerCase() === 'r' && (text[i + 1] === undefined || !isVowel(text[i + 1]))) {
+      result += 'ꦂ';
+      i += 1;
+      continue;
+    }
+    if (char.toLowerCase() === 'h' && (text[i + 1] === undefined || !isVowel(text[i + 1]))) {
+      result += 'ꦃ';
+      i += 1;
+      continue;
+    }
+
     const consonantWithA = consonantMap.get((char + 'a').toLowerCase());
     if (consonantWithA) {
       result += consonantWithA;
