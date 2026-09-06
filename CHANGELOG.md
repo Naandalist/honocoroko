@@ -7,6 +7,12 @@ Versioning follows [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+Planned as **1.3.0**.
+
+### Fixed
+
+- `fromHonocoroko` is syllable-aware: `ꦧꦶ` → `bi`, pangkon no longer becomes `/` ([#9](https://github.com/Naandalist/honocoroko/issues/9)).
+
 ## [1.2.2] - 2026-09-06
 
 ### Fixed

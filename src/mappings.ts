@@ -23,7 +23,6 @@ export const consonants: CharacterMapping[] = [
   { latin: 'ba', javanese: 'ꦧ' },
   { latin: 'tha', javanese: 'ꦛ' },
   { latin: 'nga', javanese: 'ꦔ' },
-  // Add single consonant mappings for easier lookup
   { latin: 'h', javanese: 'ꦲ' },
   { latin: 'n', javanese: 'ꦤ' },
   { latin: 'c', javanese: 'ꦕ' },
@@ -42,7 +41,6 @@ export const consonants: CharacterMapping[] = [
   { latin: 'b', javanese: 'ꦧ' },
 ];
 
-// Vowels (Aksara Swara)
 export const vowels: CharacterMapping[] = [
   { latin: 'a', javanese: 'ꦄ' },
   { latin: 'i', javanese: 'ꦆ' },
@@ -51,7 +49,6 @@ export const vowels: CharacterMapping[] = [
   { latin: 'o', javanese: 'ꦎ' },
 ];
 
-// Vowel marks (Sandhangan)
 export const vowelMarks: CharacterMapping[] = [
   { latin: 'i', javanese: 'ꦶ' },
   { latin: 'u', javanese: 'ꦸ' },
@@ -60,7 +57,6 @@ export const vowelMarks: CharacterMapping[] = [
   { latin: 'o', javanese: 'ꦺꦴ' },
 ];
 
-// Special consonants (Aksara Murda)
 export const murdaConsonants: CharacterMapping[] = [
   { latin: 'Na', javanese: 'ꦟ' },
   { latin: 'Ka', javanese: 'ꦑ' },
@@ -71,7 +67,6 @@ export const murdaConsonants: CharacterMapping[] = [
   { latin: 'Ba', javanese: 'ꦨ' },
 ];
 
-// Numbers
 export const numbers: CharacterMapping[] = [
   { latin: '0', javanese: '꧐' },
   { latin: '1', javanese: '꧑' },
@@ -85,7 +80,6 @@ export const numbers: CharacterMapping[] = [
   { latin: '9', javanese: '꧙' },
 ];
 
-// Punctuation
 export const punctuation: CharacterMapping[] = [
   { latin: ',', javanese: '꧈' },
   { latin: '.', javanese: '꧉' },
@@ -95,67 +89,51 @@ export const punctuation: CharacterMapping[] = [
   { latin: ')', javanese: '꧍' },
 ];
 
-// Special marks
 export const specialMarks: CharacterMapping[] = [
-  { latin: 'ng', javanese: 'ꦁ' }, // cecak
-  { latin: 'r', javanese: 'ꦂ' },  // layar
-  { latin: 'h', javanese: 'ꦃ' },  // wignyan
-  { latin: '/', javanese: '꧀' },  // pangkon
+  { latin: 'ng', javanese: 'ꦁ' },
+  { latin: 'r', javanese: 'ꦂ' },
+  { latin: 'h', javanese: 'ꦃ' },
+  { latin: '/', javanese: '꧀' },
 ];
 
-// Phonetic approximations for Latin letters not in Javanese
 export const phoneticApproximations: CharacterMapping[] = [
-  { latin: 'f', javanese: 'ꦥ꦳' }, // pa + cecak telu
-  { latin: 'v', javanese: 'ꦮ꦳' }, // wa + cecak telu
-  { latin: 'z', javanese: 'ꦗ꦳' }, // ja + cecak telu
-  { latin: 'q', javanese: 'ꦏ' },   // ka (maps to k sound)
-  { latin: 'x', javanese: 'ꦏ꧀ꦱ' }, // ks
+  { latin: 'f', javanese: 'ꦥ꦳' },
+  { latin: 'v', javanese: 'ꦮ꦳' },
+  { latin: 'z', javanese: 'ꦗ꦳' },
+  { latin: 'q', javanese: 'ꦏ' },
+  { latin: 'x', javanese: 'ꦏ꧀ꦱ' },
 ];
 
-// Create reverse mappings for fromHonocoroko
 export function createReverseMappings(_mappings: CharacterMapping[]): Map<string, string> {
   const reverseMap = new Map<string, string>();
-  
-  // Add vowel marks first
   vowelMarks.forEach(({ latin, javanese }) => {
     reverseMap.set(javanese, latin);
   });
-  
-  // Add consonants with 'a' (prefer 'ha', 'na', etc. over single letters)
   consonants.filter(m => m.latin.length > 1 && m.latin.endsWith('a')).forEach(({ latin, javanese }) => {
     reverseMap.set(javanese, latin);
   });
-  
-  // Add standalone vowels
   vowels.forEach(({ latin, javanese }) => {
     reverseMap.set(javanese, latin);
   });
-  
-  // Add numbers and punctuation
   numbers.forEach(({ latin, javanese }) => {
     reverseMap.set(javanese, latin);
   });
-  
   punctuation.forEach(({ latin, javanese }) => {
     reverseMap.set(javanese, latin);
   });
-  
-  // Add special marks
   specialMarks.forEach(({ latin, javanese }) => {
-    reverseMap.set(javanese, latin);
+    if (javanese !== '꧀') {
+      reverseMap.set(javanese, latin);
+    }
   });
-  
-  // Add phonetic approximations last (but don't override consonants)
   phoneticApproximations.forEach(({ latin, javanese }) => {
     if (!reverseMap.has(javanese)) {
       reverseMap.set(javanese, latin);
     }
   });
-  
   return reverseMap;
 }
 
-// Combined mappings for easy access
 export const allMappings = [
   ...consonants,
   ...vowels,
@@ -167,20 +145,14 @@ export const allMappings = [
   ...phoneticApproximations,
 ];
 
-// Create Map-based lookups for O(1) performance
 export function createLatinToJavaneseMap(): Map<string, string> {
   const map = new Map<string, string>();
-  
-  // Add all mappings, later entries with same key will override earlier ones
-  // This maintains the priority: specific mappings override general ones
   allMappings.forEach(({ latin, javanese }) => {
     map.set(latin.toLowerCase(), javanese);
   });
-  
   return map;
 }
 
-// Create Map for quick consonant lookups
 export function createConsonantMap(): Map<string, string> {
   const map = new Map<string, string>();
   consonants.forEach(({ latin, javanese }) => {
@@ -189,7 +161,6 @@ export function createConsonantMap(): Map<string, string> {
   return map;
 }
 
-// Create Map for vowel lookups
 export function createVowelMap(): Map<string, string> {
   const map = new Map<string, string>();
   vowels.forEach(({ latin, javanese }) => {
@@ -198,7 +169,6 @@ export function createVowelMap(): Map<string, string> {
   return map;
 }
 
-// Create Map for number lookups
 export function createNumberMap(): Map<string, string> {
   const map = new Map<string, string>();
   numbers.forEach(({ latin, javanese }) => {
@@ -207,7 +177,6 @@ export function createNumberMap(): Map<string, string> {
   return map;
 }
 
-// Create Map for punctuation lookups
 export function createPunctuationMap(): Map<string, string> {
   const map = new Map<string, string>();
   punctuation.forEach(({ latin, javanese }) => {
@@ -216,7 +185,6 @@ export function createPunctuationMap(): Map<string, string> {
   return map;
 }
 
-// Create Map for phonetic approximations
 export function createPhoneticMap(): Map<string, string> {
   const map = new Map<string, string>();
   phoneticApproximations.forEach(({ latin, javanese }) => {

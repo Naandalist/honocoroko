@@ -1,7 +1,7 @@
 // Tests for syllable handling in honocoroko
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { toHonocoroko } from '../index.js';
+import { toHonocoroko, fromHonocoroko } from '../index.js';
 
 describe('syllable handling', () => {
   it('transliterates "bisa" as ba+wulu+sa', () => {
@@ -30,5 +30,11 @@ describe('syllable handling', () => {
     const result = toHonocoroko('bakso');
     assert.ok(result.includes('꧀'));
     assert.strictEqual(result, 'ꦧꦏ꧀ꦱꦺꦴ');
+  });
+
+  it('fromHonocoroko reads bisa / biso / bakso', () => {
+    assert.strictEqual(fromHonocoroko('ꦧꦶꦱ'), 'bisa');
+    assert.strictEqual(fromHonocoroko('ꦧꦶꦱꦺꦴ'), 'biso');
+    assert.strictEqual(fromHonocoroko('ꦧꦏ꧀ꦱꦺꦴ'), 'bakso');
   });
 });

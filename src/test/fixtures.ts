@@ -1,7 +1,4 @@
 // Exact expected outputs for the current 1.2.x forward mapper.
-// Reverse cases that need syllable-aware decoding are listed separately
-// and skipped until https://github.com/Naandalist/honocoroko/issues/9
-
 export interface Fixture {
   latin: string;
   javanese: string;
@@ -44,34 +41,16 @@ export const toHonocorokoFixtures: Fixture[] = [
   { latin: '  ', javanese: '  ' },
 ];
 
-// Open-syllable / simple cases that already round-trip in 1.2.x
 export const workingRoundTrip: string[] = [
-  'ha',
-  'na',
-  'ca',
-  'ra',
-  'ka',
-  'hanacaraka',
-  'hanacara',
-  'ha na ca ra ka',
-  '1234567890',
-  'hana 123',
-  'hana?',
-  'cara!',
-  'nga',
-  'nya',
-  'dha',
-  'tha',
-  'f',
-  'v',
-  'z',
+  'ha', 'na', 'ca', 'ra', 'ka', 'hanacaraka', 'hanacara',
+  'ha na ca ra ka', '1234567890', 'hana 123', 'hana?', 'cara!',
+  'nga', 'nya', 'dha', 'tha', 'f', 'v', 'z',
 ];
 
-// Known-broken until syllable-aware fromHonocoroko (#9)
+export const workingSyllableRoundTrip: string[] = [
+  'bi', 'bu', 'be', 'bo', 'bisa', 'biso', 'bakso',
+];
+
 export const brokenRoundTrip: Array<{ latin: string; reason: string }> = [
-  { latin: 'bi', reason: 'ꦧꦶ currently decodes as "bai" instead of "bi"' },
-  { latin: 'bisa', reason: 'sandhangan i is appended after inherent a' },
-  { latin: 'biso', reason: 'sandhangan i/o are not folded into the syllable' },
-  { latin: 'bakso', reason: 'pangkon ꧀ currently reverse-maps to "/"' },
-  { latin: 'wong', reason: 'final ng is not cecak; reverse also drops vowels wrongly' },
+  { latin: 'wong', reason: 'final ng is not cecak (#10)' },
 ];
