@@ -13,4 +13,9 @@ export interface TransliterationOptions {
   // When true, converts special characters (like ?, @, .) to Hanacaraka approximations
   // When false (default), preserves these characters unchanged
   convertSpecialChars?: boolean;
+  // When true, uppercase N/K/T/S/P/G/B onsets use Aksara Murda. Default false.
+  useMurda?: boolean;
+  // When true (default), standalone vowels use Aksara Swara.
+  // When false, they use ha + sandhangan.
+  useSwara?: boolean;
 }
