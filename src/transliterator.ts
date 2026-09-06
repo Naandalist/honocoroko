@@ -46,6 +46,16 @@ function getVowelMark(vowel: string): string {
   return VOWEL_MARKS[vowel.toLowerCase()] || '';
 }
 
+const MURDA_ONSET: Record<string, string> = {
+  N: 'ꦟ',
+  K: 'ꦑ',
+  T: 'ꦡ',
+  S: 'ꦯ',
+  P: 'ꦦ',
+  G: 'ꦓ',
+  B: 'ꦨ',
+};
+
 function codePointLabel(char: string): string {
   const cp = char.codePointAt(0) ?? 0;
   return `U+${cp.toString(16).toUpperCase().padStart(4, '0')}`;
@@ -63,6 +73,8 @@ export function toHonocoroko(text: string, options?: TransliterationOptions): st
 
   const convertSpecialChars = options?.convertSpecialChars ?? false;
   const strict = options?.strict ?? false;
+  const useMurda = options?.useMurda ?? false;
+  const useSwara = options?.useSwara ?? true;
   let result = '';
   let i = 0;
 
@@ -92,6 +104,25 @@ export function toHonocoroko(text: string, options?: TransliterationOptions): st
     if (punctJavanese) {
       result += punctJavanese;
       i++;
+      continue;
+    }
+
+    if (useMurda && MURDA_ONSET[char]) {
+      const murda = MURDA_ONSET[char];
+      const nextChar = text[i + 1];
+      if (nextChar !== undefined && isVowel(nextChar)) {
+        result += murda;
+        if (nextChar.toLowerCase() !== 'a') {
+          result += getVowelMark(nextChar);
+        }
+        i += 2;
+        continue;
+      }
+      result += murda;
+      if (nextChar !== undefined && isConsonant(nextChar)) {
+        result += '꧀';
+      }
+      i += 1;
       continue;
     }
 
@@ -179,7 +210,14 @@ export function toHonocoroko(text: string, options?: TransliterationOptions): st
 
     const vowelJavanese = vowelMap.get(char.toLowerCase());
     if (vowelJavanese) {
-      result += vowelJavanese;
+      if (useSwara) {
+        result += vowelJavanese;
+      } else {
+        result += 'ꦲ';
+        if (char.toLowerCase() !== 'a') {
+          result += getVowelMark(char);
+        }
+      }
       i++;
       continue;
     }
@@ -239,6 +277,13 @@ export function fromHonocoroko(text: string, options?: TransliterationOptions): 
     'ꦧ': { base: 'b', withA: 'ba' },
     'ꦛ': { base: 'th', withA: 'tha' },
     'ꦔ': { base: 'ng', withA: 'nga' },
+    'ꦟ': { base: 'N', withA: 'Na' },
+    'ꦑ': { base: 'K', withA: 'Ka' },
+    'ꦡ': { base: 'T', withA: 'Ta' },
+    'ꦯ': { base: 'S', withA: 'Sa' },
+    'ꦦ': { base: 'P', withA: 'Pa' },
+    'ꦓ': { base: 'G', withA: 'Ga' },
+    'ꦨ': { base: 'B', withA: 'Ba' },
   };
 
   const phoneticOnset: Record<string, string> = {

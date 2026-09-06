@@ -14,6 +14,10 @@ Planned as **1.3.0**.
 - `fromHonocoroko` is syllable-aware: `ꦧꦶ` → `bi`, pangkon no longer becomes `/` ([#9](https://github.com/Naandalist/honocoroko/issues/9)).
 - Syllable-final `-ng` / `-r` / `-h` map to cecak, layar, wignyan ([#10](https://github.com/Naandalist/honocoroko/issues/10)).
 
+### Added
+
+- `useMurda` and `useSwara` options ([#11](https://github.com/Naandalist/honocoroko/issues/11)).
+
 ## [1.2.2] - 2026-09-06
 
 ### Fixed
