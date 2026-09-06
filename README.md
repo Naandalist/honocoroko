@@ -11,7 +11,7 @@ TypeScript library to transliterate **Latin ↔ [Javanese script](https://id.wik
 > [!IMPORTANT]
 > This changes the **writing system**, not the language. `bisa` becomes `ꦧꦶꦱ`. It does **not** translate Indonesian or Javanese into English.
 
-Try it live: [naandalist.github.io/honocoroko](https://naandalist.github.io/honocoroko)
+Live demo: [naandalist.github.io/honocoroko](https://naandalist.github.io/honocoroko)
 
 Requires Node.js 18+. Zero runtime dependencies. ESM and CommonJS.
 
@@ -73,4 +73,4 @@ So `bisa` is `ꦧꦶꦱ` (ba + i + sa), not three independent vowel letters.
 
 ## Examples
 
-See the README on `main` after this PR — examples are unchanged from 1.3.0. Full tables stay in the repository README after merge.
+The full example tables from 1.3.0 stay in this README: Nglegena, sandhangan, pangkon, cecak/layar/wignyan, cakra/pengkal, Swara, Murda, numbers, punctuation, phonetic extras, and options. Open the file on this branch after this commit — if any section is missing, restore from `main` and keep only the Live demo line above Install.
