@@ -32,6 +32,8 @@ Requires Node.js 18+. Zero runtime dependencies. ESM and CommonJS.
 
 ```bash
 npm install @naandalist/honocoroko
+yarn add @naandalist/honocoroko
+pnpm add @naandalist/honocoroko
 ```
 
 ```ts
