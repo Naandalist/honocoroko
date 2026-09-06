@@ -3,8 +3,47 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>honocoroko — Latin ↔ Aksara Jawa</title>
-  <meta name="description" content="Live transliteration between Latin and Javanese script. Not a translator.">
+  <title>honocoroko — Latin ↔ Javanese script</title>
+  <meta name="description" content="Live playground to transliterate Latin and Javanese script (Aksara Jawa / Hanacaraka). Transliteration, not translation.">
+  <meta name="author" content="Listiananda Apriliawan">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#16130f">
+  <link rel="canonical" href="https://naandalist.github.io/honocoroko/">
+  <link rel="alternate" hreflang="en" href="https://naandalist.github.io/honocoroko/?lang=en">
+  <link rel="alternate" hreflang="id" href="https://naandalist.github.io/honocoroko/?lang=id">
+  <link rel="alternate" hreflang="x-default" href="https://naandalist.github.io/honocoroko/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="honocoroko">
+  <meta property="og:title" content="honocoroko — Latin ↔ Javanese script">
+  <meta property="og:description" content="Live playground to transliterate Latin and Javanese script. Transliteration, not translation.">
+  <meta property="og:url" content="https://naandalist.github.io/honocoroko/">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="id_ID">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="honocoroko — Latin ↔ Javanese script">
+  <meta name="twitter:description" content="Live playground to transliterate Latin and Javanese script. Transliteration, not translation.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "honocoroko",
+    "url": "https://naandalist.github.io/honocoroko/",
+    "description": "Live playground to transliterate Latin and Javanese script (Aksara Jawa / Hanacaraka).",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "inLanguage": ["en", "id"],
+    "author": {
+      "@type": "Person",
+      "name": "Listiananda Apriliawan",
+      "url": "https://www.naandalist.com/"
+    },
+    "isPartOf": {
+      "@type": "SoftwareSourceCode",
+      "name": "@naandalist/honocoroko",
+      "codeRepository": "https://github.com/Naandalist/honocoroko"
+    }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+Javanese:wght@400;700&display=swap" rel="stylesheet">
@@ -12,18 +51,24 @@
 </head>
 <body>
   <header class="top">
-    <div>
-      <p class="eyebrow">@naandalist/honocoroko</p>
-      <h1>Latin ↔ Aksara Jawa</h1>
+    <div class="top-row">
+      <div>
+        <p class="eyebrow">@naandalist/honocoroko</p>
+        <h1 data-i18n="title">Latin ↔ Javanese script</h1>
+      </div>
+      <div class="seg lang" role="group" aria-label="Language">
+        <button type="button" id="lang-en" class="on">EN</button>
+        <button type="button" id="lang-id">ID</button>
+      </div>
     </div>
-    <p class="warn">Transliteration, not translation. This changes the writing system, not the meaning of the words.</p>
+    <p class="warn" data-i18n="warn">Transliteration, not translation. This changes the writing system, not the meaning of the words.</p>
   </header>
 
   <main>
     <div class="toolbar">
       <div class="seg" role="group" aria-label="Direction">
-        <button type="button" id="dir-to" class="on" data-dir="to">Latin → Jawa</button>
-        <button type="button" id="dir-from" data-dir="from">Jawa → Latin</button>
+        <button type="button" id="dir-to" class="on" data-i18n="dirTo">Latin → Javanese</button>
+        <button type="button" id="dir-from" data-i18n="dirFrom">Javanese → Latin</button>
       </div>
       <label class="chk"><input type="checkbox" id="useMurda"> useMurda</label>
       <label class="chk"><input type="checkbox" id="useSwara" checked> useSwara</label>
@@ -32,15 +77,15 @@
     <section class="grid">
       <div class="pane">
         <div class="pane-head">
-          <label for="input" id="input-label">Latin</label>
-          <button type="button" id="copy-in" class="ghost">Copy</button>
+          <label for="input" id="input-label" data-i18n="latin">Latin</label>
+          <button type="button" id="copy-in" class="ghost" data-i18n="copy">Copy</button>
         </div>
         <textarea id="input" spellcheck="false" rows="6" placeholder="hanacaraka"></textarea>
       </div>
       <div class="pane">
         <div class="pane-head">
-          <span id="output-label">Aksara Jawa</span>
-          <button type="button" id="copy-out" class="ghost">Copy</button>
+          <span id="output-label" data-i18n="javanese">Javanese script</span>
+          <button type="button" id="copy-out" class="ghost" data-i18n="copy">Copy</button>
         </div>
         <pre id="output" class="aksara" aria-live="polite"></pre>
       </div>
@@ -60,7 +105,7 @@
     </div>
 
     <aside class="install">
-      <p>Use it in a project</p>
+      <p data-i18n="install">Use it in a project</p>
       <code>npm i @naandalist/honocoroko</code>
       <p class="links">
         <a href="https://www.npmjs.com/package/@naandalist/honocoroko">npm</a>
@@ -69,6 +114,13 @@
       </p>
     </aside>
   </main>
+
+  <footer class="credit">
+    <p>
+      <span data-i18n="credit">Made by</span>
+      <a href="https://www.naandalist.com/" rel="author">Listiananda Apriliawan</a>
+    </p>
+  </footer>
 
   <script type="module" src="./app.js"></script>
 </body>
