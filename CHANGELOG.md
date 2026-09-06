@@ -7,7 +7,7 @@ Versioning follows [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
-Planned as **1.3.0**.
+## [1.3.0] - 2026-09-06
 
 ### Fixed
 
@@ -46,6 +46,7 @@ Published to npm as `@naandalist/honocoroko@1.2.1`. There was no matching GitHub
 - Javanese → Latin (`fromHonocoroko`) as a character lookup (not syllable-aware).
 - Dual ESM / CommonJS build with TypeScript types.
 
-[Unreleased]: https://github.com/Naandalist/honocoroko/compare/v1.2.2...HEAD
+[Unreleased]: https://github.com/Naandalist/honocoroko/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/Naandalist/honocoroko/compare/v1.2.2...v1.3.0
 [1.2.2]: https://github.com/Naandalist/honocoroko/compare/v1.2.1...v1.2.2
 [1.2.1]: https://www.npmjs.com/package/@naandalist/honocoroko/v/1.2.1
