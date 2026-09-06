@@ -6,105 +6,313 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://github.com/Naandalist/honocoroko/actions/workflows/ci.yml/badge.svg)](https://github.com/Naandalist/honocoroko/actions/workflows/ci.yml)
 
-A TypeScript library for transliterating text between Latin and [Javanese script (Aksara Jawa/Hanacaraka)](https://id.wikipedia.org/wiki/Hanacaraka).
+TypeScript library to transliterate **Latin ↔ [Javanese script](https://id.wikipedia.org/wiki/Hanacaraka)** (Aksara Jawa / Hanacaraka / Honocoroko).
 
 > [!IMPORTANT]
-> **This library changes writing systems (Latin ↔ Javanese script), not languages. It is transliteration, not translation.**
+> This changes the **writing system**, not the language. `bisa` becomes `ꦧꦶꦱ`. It does **not** translate Indonesian or Javanese into English.
 
-## Installation
+Requires Node.js 18+. Zero runtime dependencies. ESM and CommonJS.
+
+## Contents
+
+- [Install](#install)
+- [Quick start](#quick-start)
+- [How a syllable is written](#how-a-syllable-is-written)
+- [Examples](#examples)
+- [Options](#options)
+- [Reverse: `fromHonocoroko`](#reverse-fromhonocoroko)
+- [API](#api)
+- [Fonts](#fonts)
+- [What this version does not do](#what-this-version-does-not-do)
+- [License](#license)
+
+## Install
 
 ```bash
 npm install @naandalist/honocoroko
 ```
 
-Requires Node.js 18+.
+```ts
+import { toHonocoroko, fromHonocoroko, transliterate } from '@naandalist/honocoroko';
+```
 
-## What it does
+```js
+const { toHonocoroko, fromHonocoroko, transliterate } = require('@naandalist/honocoroko');
+```
 
-```typescript
-import { toHonocoroko, fromHonocoroko } from '@naandalist/honocoroko';
+## Quick start
 
+```ts
 toHonocoroko('hanacaraka'); // ꦲꦤꦕꦫꦏ
 toHonocoroko('bisa');       // ꦧꦶꦱ
 toHonocoroko('bakso');      // ꦧꦏ꧀ꦱꦺꦴ
 toHonocoroko('wong');       // ꦮꦺꦴꦁ
-toHonocoroko('besar');      // ꦧꦼꦱꦂ
-toHonocoroko('rumah');      // ꦫꦸꦩꦃ
 
-fromHonocoroko('ꦧꦶ');                 // "bi"
-fromHonocoroko(toHonocoroko('bisa'));  // "bisa"
-fromHonocoroko(toHonocoroko('wong'));  // "wong"
+fromHonocoroko('ꦧꦶꦱ');              // "bisa"
+fromHonocoroko(toHonocoroko('wong')); // "wong"
+
+transliterate('bisa', 'toHonocoroko');
+transliterate('ꦧꦶꦱ', 'fromHonocoroko');
 ```
 
-`nga` stays Aksara Nga (`ꦔ`), not cecak.
+## How a syllable is written
 
-## Not implemented yet
+Each aksara already carries an inherent **a**.
 
-| Missing | Planned |
+| Latin | Written as |
 |---|---|
-| Aksara Murda | [#11](https://github.com/Naandalist/honocoroko/issues/11) |
-| Aksara Swara as a first-class option | [#11](https://github.com/Naandalist/honocoroko/issues/11) |
-| Cakra / pengkal | [#12](https://github.com/Naandalist/honocoroko/issues/12) |
-| `e` vs `é` documented as taling vs pepet | [#12](https://github.com/Naandalist/honocoroko/issues/12) |
+| `ka` | `ꦏ` |
+| `ki` | `ꦏꦶ` (ka + wulu) |
+| `k` before another consonant | `ꦏ꧀` (ka + pangkon) |
+| `kang` | `ꦏꦁ` (ka + cecak) |
+| `kra` | `ꦏꦿ` (ka + cakra) |
 
-## Usage
+So `bisa` is `ꦧꦶꦱ` (ba + i + sa), not three independent vowel letters.
 
-ESM:
+## Examples
 
-```typescript
-import { toHonocoroko, fromHonocoroko, transliterate } from '@naandalist/honocoroko';
+### Basic consonants (Nglegena)
+
+| Latin | Javanese | Latin | Javanese |
+|---|---|---|---|
+| `ha` | ꦲ | `pa` | ꦥ |
+| `na` | ꦤ | `dha` | ꦝ |
+| `ca` | ꦕ | `ja` | ꦗ |
+| `ra` | ꦫ | `ya` | ꦪ |
+| `ka` | ꦏ | `nya` | ꦚ |
+| `da` | ꦢ | `ma` | ꦩ |
+| `ta` | ꦠ | `ga` | ꦒ |
+| `sa` | ꦱ | `ba` | ꦧ |
+| `wa` | ꦮ | `tha` | ꦛ |
+| `la` | ꦭ | `nga` | ꦔ |
+
+```ts
+toHonocoroko('ha');         // ꦲ
+toHonocoroko('hanacaraka'); // ꦲꦤꦕꦫꦏ
+toHonocoroko('nya');        // ꦚ   Aksara Nya, not n + pengkal
+toHonocoroko('nga');        // ꦔ   Aksara Nga, not cecak
 ```
 
-CommonJS:
+### Vowels on a consonant (sandhangan)
 
-```javascript
-const { toHonocoroko, fromHonocoroko, transliterate } = require('@naandalist/honocoroko');
+| Latin | Mark | Name | Example |
+|---|---|---|---|
+| inherent `a` | — | — | `ba` → `ꦧ` |
+| `i` | ꦶ | wulu | `bi` → `ꦧꦶ` |
+| `u` | ꦸ | suku | `bu` → `ꦧꦸ` |
+| `e` | ꦼ | pepet | `be` → `ꦧꦼ` |
+| `é` or `è` | ꦺ | taling | `bé` → `ꦧꦺ` |
+| `o` | ꦺꦴ | taling + tarung | `bo` → `ꦧꦺꦴ` |
+
+```ts
+toHonocoroko('bi');   // ꦧꦶ
+toHonocoroko('be');   // ꦧꦼ     pepet
+toHonocoroko('bé');   // ꦧꦺ     taling
+toHonocoroko('bè');   // ꦧꦺ     same as é
+toHonocoroko('bo');   // ꦧꦺꦴ
+toHonocoroko('bisa'); // ꦧꦶꦱ
+toHonocoroko('biso'); // ꦧꦶꦱꦺꦴ
 ```
 
-## Features
+Plain `e` is pepet. Use `é` or `è` when you want taling.
 
-- ESM and CommonJS
-- Aksara Nglegena (basic consonants)
-- Sandhangan on both paths (`bi` ↔ `ꦧꦶ`)
-- Pangkon between consonants (`bakso` → `ꦧꦏ꧀ꦱꦺꦴ`)
-- Syllable-final `-ng` / `-r` / `-h` as cecak, layar, wignyan
-- Javanese numerals `0-9` → `꧐-꧙`
-- Javanese punctuation `,` `.` `:`
-- Phonetic Latin extras: `f` `v` `z` `q` `x`
-- TypeScript types, zero runtime dependencies
+### Closed syllables (pangkon)
 
-## Supported characters
+A consonant with no vowel, sitting before another consonant, takes pangkon (`꧀`).
 
-### Basic consonants
+```ts
+toHonocoroko('bakso'); // ꦧꦏ꧀ꦱꦺꦴ
+// ba + ka + pangkon + sa + o
+```
 
-- ha (ꦲ), na (ꦤ), ca (ꦕ), ra (ꦫ), ka (ꦏ)
-- da (ꦢ), ta (ꦠ), sa (ꦱ), wa (ꦮ), la (ꦭ)
-- pa (ꦥ), dha (ꦝ), ja (ꦗ), ya (ꦪ), nya (ꦚ)
-- ma (ꦩ), ga (ꦒ), ba (ꦧ), tha (ꦛ), nga (ꦔ)
+### Final `-ng` / `-r` / `-h`
+
+These attach to the previous syllable. They are not extra aksara.
+
+| Ending | Mark | Name | Example |
+|---|---|---|---|
+| `-ng` | ꦁ | cecak | `wong` → `ꦮꦺꦴꦁ` |
+| `-r` | ꦂ | layar | `besar` → `ꦧꦼꦱꦂ` |
+| `-h` | ꦃ | wignyan | `rumah` → `ꦫꦸꦩꦃ` |
+
+```ts
+toHonocoroko('wong');  // ꦮꦺꦴꦁ
+toHonocoroko('besar'); // ꦧꦼꦱꦂ
+toHonocoroko('rumah'); // ꦫꦸꦩꦃ
+toHonocoroko('nga');   // ꦔ   onset nga stays Aksara Nga
+```
+
+### Cakra and pengkal
+
+Medial `r` / `y` after a consonant (`CrV` / `CyV`).
+
+```ts
+toHonocoroko('kra');  // ꦏꦿ
+toHonocoroko('sri');  // ꦱꦿꦶ
+toHonocoroko('kya');  // ꦏꦾ
+toHonocoroko('kyai'); // ꦏꦾꦆ
+```
+
+### Standalone vowels (Aksara Swara)
+
+Default `useSwara: true`. A vowel with no consonant in front uses Swara.
+
+| Latin | Default | `{ useSwara: false }` |
+|---|---|---|
+| `a` | ꦄ | ꦲ |
+| `i` | ꦆ | ꦲꦶ |
+| `u` | ꦈ | ꦲꦸ |
+| `e` | ꦌ | ꦲꦼ |
+| `o` | ꦎ | ꦲꦺꦴ |
+
+```ts
+toHonocoroko('i');                      // ꦆ
+toHonocoroko('i', { useSwara: false }); // ꦲꦶ
+```
+
+### Aksara Murda
+
+Off by default. `{ useMurda: true }` plus an **uppercase** onset `N K T S P G B`.
+
+| Latin | Default | `{ useMurda: true }` |
+|---|---|---|
+| `Na` | ꦤ | ꦟ |
+| `Ka` | ꦏ | ꦑ |
+| `Ta` | ꦠ | ꦡ |
+| `Sa` | ꦱ | ꦯ |
+| `Pa` | ꦥ | ꦦ |
+| `Ga` | ꦒ | ꦓ |
+| `Ba` | ꦧ | ꦨ |
+| `Ni` | ꦤꦶ | ꦟꦶ |
+| `na` | ꦤ | ꦤ |
+
+```ts
+toHonocoroko('Na');                     // ꦤ
+toHonocoroko('Na', { useMurda: true }); // ꦟ
+toHonocoroko('na', { useMurda: true }); // ꦤ
+toHonocoroko('hanacaraka', { useMurda: true }); // ꦲꦤꦕꦫꦏ
+```
+
+Do not call `.toLowerCase()` first if you want Murda. The capital letter is the trigger.
 
 ### Numbers
 
-- 0-9 → ꧐-꧙
+`0`–`9` → `꧐`–`꧙`.
+
+```ts
+toHonocoroko('0');        // ꧐
+toHonocoroko('123');      // ꧑꧒꧓
+toHonocoroko('hana 123'); // ꦲꦤ ꧑꧒꧓
+```
 
 ### Punctuation
 
-- `,` → ꧈
-- `.` → ꧉
-- `:` → ꧇
+| Latin | Javanese |
+|---|---|
+| `,` | ꧈ |
+| `.` | ꧉ |
+| `:` | ꧇ |
 
-### Phonetic approximations
+`?` `!` `@` and similar stay Latin unless `convertSpecialChars` is on.
 
-- f → ꦥ꦳ (pa + cecak telu)
-- v → ꦮ꦳ (wa + cecak telu)
-- z → ꦗ꦳ (ja + cecak telu)
-- q → ꦏ (ka)
-- x → ꦏ꧀ꦱ (ks)
+```ts
+toHonocoroko(',');      // ꧈
+toHonocoroko('hana?');  // ꦲꦤ?
+toHonocoroko('cara!');  // ꦕꦫ!
+```
 
-## Font support
+### Phonetic Latin extras
 
-This package does **not** ship a Javanese font. Output is Unicode; display depends on the font on the system or page.
+| Latin | Javanese | Notes |
+|---|---|---|
+| `f` | ꦥ꦳ | pa + cecak telu |
+| `v` | ꦮ꦳ | wa + cecak telu |
+| `z` | ꦗ꦳ | ja + cecak telu |
+| `q` | ꦏ | treated as ka |
+| `x` | ꦏ꧀ꦱ | treated as ks |
 
-- [Noto Sans Javanese](https://fonts.google.com/noto/specimen/Noto+Sans+Javanese) (SIL Open Font License)
+```ts
+toHonocoroko('f'); // ꦥ꦳
+```
+
+### Spaces and mixed text
+
+Spaces are kept. Letters and numbers can sit in one string.
+
+```ts
+toHonocoroko('ha na ca ra ka'); // ꦲ ꦤ ꦕ ꦫ ꦏ
+toHonocoroko('hana 123');       // ꦲꦤ ꧑꧒꧓
+toHonocoroko('');               // ""
+```
+
+## Options
+
+```ts
+interface TransliterationOptions {
+  convertSpecialChars?: boolean; // default false
+  strict?: boolean;              // default false
+  useMurda?: boolean;            // default false
+  useSwara?: boolean;            // default true
+}
+```
+
+### `convertSpecialChars`
+
+Default `false`: `?` `!` `@` stay Latin.
+
+### `strict`
+
+Default `false`: unmapped characters pass through, no `console` output.
+
+`true` throws if a character has no mapping **and** is not in the preserved set:
+
+```ts
+toHonocoroko('apa§', { convertSpecialChars: true, strict: true });
+// Error: No mapping found for character: § (U+00A7)
+
+toHonocoroko('hana?', { strict: true }); // "ꦲꦤ?" — does not throw
+```
+
+### `useMurda` / `useSwara`
+
+See [Aksara Murda](#aksara-murda) and [Standalone vowels](#standalone-vowels-aksara-swara).
+
+## Reverse: `fromHonocoroko`
+
+`fromHonocoroko` reads aksara + sandhangan + pangkon + cecak/layar/wignyan + cakra/pengkal as syllables.
+
+```ts
+fromHonocoroko('ꦧꦶ');                         // "bi"
+fromHonocoroko('ꦧꦏ꧀ꦱꦺꦴ');           // "bakso"
+fromHonocoroko('ꦮꦺꦴꦁ');                   // "wong"
+fromHonocoroko('ꦏꦿ');                         // "kra"
+fromHonocoroko(toHonocoroko('bisa'));        // "bisa"
+fromHonocoroko(toHonocoroko('Na', { useMurda: true })); // "Na"
+```
+
+Notes:
+
+- Taling (`ꦺ`) comes back as `é`, not plain `e`.
+- Murda glyphs come back with a capital onset (`ꦟ` → `Na`).
+- Reverse is built for text this library produced. Unusual hand-composed sequences may not round-trip.
+
+## API
+
+```ts
+toHonocoroko(text: string, options?: TransliterationOptions): string
+fromHonocoroko(text: string, options?: TransliterationOptions): string
+transliterate(
+  text: string,
+  direction: 'toHonocoroko' | 'fromHonocoroko',
+  options?: TransliterationOptions,
+): string
+```
+
+## Fonts
+
+This package does **not** ship a font. Output is Unicode. Display depends on the font on the system or page.
+
+- [Noto Sans Javanese](https://fonts.google.com/noto/specimen/Noto+Sans+Javanese) (SIL OFL)
 - [nyk Ngayogyan](https://aksaradinusantara.com/fonta/nyk-ngayogyan.font) (Apri Nugroho / Dinas Kebudayaan DIY)
 
 ```html
@@ -114,44 +322,15 @@ This package does **not** ship a Javanese font. Output is Unicode; display depen
 </style>
 ```
 
-## API
+## What this version does not do
 
-```typescript
-toHonocoroko(text: string, options?: TransliterationOptions): string
-fromHonocoroko(text: string, options?: TransliterationOptions): string
-transliterate(text: string, direction: TransliterationDirection, options?: TransliterationOptions): string
-
-interface TransliterationOptions {
-  convertSpecialChars?: boolean; // default false — keep ?, !, @, …
-  strict?: boolean;              // default false — keep unmapped chars; true throws
-}
-```
-
-### `convertSpecialChars`
-
-Default `false`: `?` `!` `@` and similar stay as Latin. `true` tries to convert them; if there is no mapping they stay as-is unless `strict` is on.
-
-### `strict`
-
-Default `false`: no `console` output; unmapped characters pass through. `true` throws:
-
-```typescript
-toHonocoroko('apa§', { convertSpecialChars: true, strict: true });
-// Error: No mapping found for character: § (U+00A7)
-```
-
-`toHonocoroko('hana?', { strict: true })` does not throw — `?` is a preserved character.
+- Translation (meaning). Only script conversion.
+- A live playground. That is [#13](https://github.com/Naandalist/honocoroko/issues/13) for 1.4.0.
+- Every historical or rare aksara combination.
 
 ## Releasing
 
-See [CHANGELOG.md](CHANGELOG.md).
-
-1. Bump `version` in `package.json`.
-2. Move the `[Unreleased]` notes in `CHANGELOG.md` under the new version heading.
-3. Merge to `main`.
-4. Create a GitHub Release whose tag is `vX.Y.Z` (example: `v1.2.2`).
-
-`publish.yml` runs only on that published Release. Tag and `package.json` version must match. Auth is npm Trusted Publishing (OIDC), not `NPM_TOKEN`.
+See [CHANGELOG.md](CHANGELOG.md). Publish by creating a GitHub Release tagged `vX.Y.Z`. `publish.yml` uses npm Trusted Publishing (OIDC).
 
 ## License
 
