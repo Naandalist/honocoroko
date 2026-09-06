@@ -18,6 +18,7 @@ Requires Node.js 18+. Zero runtime dependencies. ESM and CommonJS.
 ## Contents
 
 - [Install](#install)
+- [Usage](#usage)
 - [Quick start](#quick-start)
 - [How a syllable is written](#how-a-syllable-is-written)
 - [Examples](#examples)
@@ -48,9 +49,15 @@ yarn add @naandalist/honocoroko
 pnpm add @naandalist/honocoroko
 ```
 
+## Usage
+
+**ESM**
+
 ```ts
 import { toHonocoroko, fromHonocoroko, transliterate } from '@naandalist/honocoroko';
 ```
+
+**CommonJS**
 
 ```js
 const { toHonocoroko, fromHonocoroko, transliterate } = require('@naandalist/honocoroko');
