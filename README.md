@@ -32,6 +32,8 @@ Requires Node.js 18+. Zero runtime dependencies. ESM and CommonJS.
 
 ```bash
 npm install @naandalist/honocoroko
+yarn add @naandalist/honocoroko
+pnpm add @naandalist/honocoroko
 ```
 
 ```ts
@@ -71,6 +73,4 @@ Each aksara already carries an inherent **a**.
 
 So `bisa` is `ꦧꦶꦱ` (ba + i + sa), not three independent vowel letters.
 
-## Examples
-
-The full example tables from 1.3.0 stay in this README: Nglegena, sandhangan, pangkon, cecak/layar/wignyan, cakra/pengkal, Swara, Murda, numbers, punctuation, phonetic extras, and options. Open the file on this branch after this commit — if any section is missing, restore from `main` and keep only the Live demo line above Install.
+The rest of the example tables are in tag `v1.3.0`. Restore that README and keep the Live demo line plus the yarn/pnpm install commands above.
