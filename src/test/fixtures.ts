@@ -1,32 +1,29 @@
 // Exact expected outputs for the current 1.2.x forward mapper.
-// Reverse cases that need syllable-aware decoding are listed separately
-// and skipped until https://github.com/Naandalist/honocoroko/issues/9
-
 export interface Fixture {
   latin: string;
   javanese: string;
 }
 
 export const toHonocorokoFixtures: Fixture[] = [
-  { latin: 'ha', javanese: '' },
-  { latin: 'na', javanese: '' },
-  { latin: 'ca', javanese: '' },
-  { latin: 'ra', javanese: '' },
-  { latin: 'ka', javanese: '' },
-  { latin: 'hanacaraka', javanese: '' },
-  { latin: 'ha na ca ra ka', javanese: '    ' },
-  { latin: 'ba', javanese: '' },
-  { latin: 'bi', javanese: '' },
-  { latin: 'bu', javanese: '' },
-  { latin: 'be', javanese: '' },
-  { latin: 'bo', javanese: '' },
-  { latin: 'bisa', javanese: '' },
-  { latin: 'biso', javanese: '' },
-  { latin: 'bakso', javanese: '꧀' },
-  { latin: 'nga', javanese: '' },
-  { latin: 'nya', javanese: '' },
-  { latin: 'dha', javanese: '' },
-  { latin: 'tha', javanese: '' },
+  { latin: 'ha', javanese: 'ꦲ' },
+  { latin: 'na', javanese: 'ꦤ' },
+  { latin: 'ca', javanese: 'ꦕ' },
+  { latin: 'ra', javanese: 'ꦫ' },
+  { latin: 'ka', javanese: 'ꦏ' },
+  { latin: 'hanacaraka', javanese: 'ꦲꦤꦕꦫꦏ' },
+  { latin: 'ha na ca ra ka', javanese: 'ꦲ ꦤ ꦕ ꦫ ꦏ' },
+  { latin: 'ba', javanese: 'ꦧ' },
+  { latin: 'bi', javanese: 'ꦧꦶ' },
+  { latin: 'bu', javanese: 'ꦧꦸ' },
+  { latin: 'be', javanese: 'ꦧꦼ' },
+  { latin: 'bo', javanese: 'ꦧꦺꦴ' },
+  { latin: 'bisa', javanese: 'ꦧꦶꦱ' },
+  { latin: 'biso', javanese: 'ꦧꦶꦱꦺꦴ' },
+  { latin: 'bakso', javanese: 'ꦧꦏ꧀ꦱꦺꦴ' },
+  { latin: 'nga', javanese: 'ꦔ' },
+  { latin: 'nya', javanese: 'ꦚ' },
+  { latin: 'dha', javanese: 'ꦝ' },
+  { latin: 'tha', javanese: 'ꦛ' },
   { latin: '0', javanese: '꧐' },
   { latin: '1', javanese: '꧑' },
   { latin: '123', javanese: '꧑꧒꧓' },
@@ -34,50 +31,26 @@ export const toHonocorokoFixtures: Fixture[] = [
   { latin: ',', javanese: '꧈' },
   { latin: '.', javanese: '꧉' },
   { latin: ':', javanese: '꧇' },
-  { latin: 'hana 123', javanese: ' ꧑꧒꧓' },
-  { latin: 'f', javanese: '' },
-  { latin: 'v', javanese: '' },
-  { latin: 'z', javanese: '' },
-  { latin: 'hana?', javanese: '?' },
-  { latin: 'cara!', javanese: '!' },
+  { latin: 'hana 123', javanese: 'ꦲꦤ ꧑꧒꧓' },
+  { latin: 'f', javanese: 'ꦥ꦳' },
+  { latin: 'v', javanese: 'ꦮ꦳' },
+  { latin: 'z', javanese: 'ꦗ꦳' },
+  { latin: 'hana?', javanese: 'ꦲꦤ?' },
+  { latin: 'cara!', javanese: 'ꦕꦫ!' },
   { latin: '', javanese: '' },
   { latin: '  ', javanese: '  ' },
 ];
 
-// Open-syllable / simple cases that already round-trip in 1.2.x
 export const workingRoundTrip: string[] = [
-  'ha',
-  'na',
-  'ca',
-  'ra',
-  'ka',
-  'hanacaraka',
-  'hanacara',
-  'ha na ca ra ka',
-  '1234567890',
-  'hana 123',
-  'hana?',
-  'cara!',
-  'nga',
-  'nya',
-  'dha',
-  'tha',
-  'f',
-  'v',
-  'z',
+  'ha', 'na', 'ca', 'ra', 'ka', 'hanacaraka', 'hanacara',
+  'ha na ca ra ka', '1234567890', 'hana 123', 'hana?', 'cara!',
+  'nga', 'nya', 'dha', 'tha', 'f', 'v', 'z',
 ];
 
 export const workingSyllableRoundTrip: string[] = [
-  'bi',
-  'bu',
-  'be',
-  'bo',
-  'bisa',
-  'biso',
-  'bakso',
+  'bi', 'bu', 'be', 'bo', 'bisa', 'biso', 'bakso',
 ];
 
-// Still blocked until later 1.3.0 issues
 export const brokenRoundTrip: Array<{ latin: string; reason: string }> = [
   { latin: 'wong', reason: 'final ng is not cecak (#10)' },
 ];
