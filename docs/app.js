@@ -1,4 +1,4 @@
-import { toHonocoroko, fromHonocoroko } from 'https://esm.sh/@naandalist/honocoroko@1.3.0';
+import { toHonocoroko, fromHonocoroko } from 'https://esm.sh/@naandalist/honocoroko@1.4.0';
 
 const I18N = {
   en: {
