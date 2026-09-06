@@ -38,6 +38,56 @@ describe('honocoroko', () => {
     });
   });
 
+  describe('strict option and silence', () => {
+    function captureWarns(fn: () => void): string[] {
+      const warns: string[] = [];
+      const original = console.warn;
+      console.warn = (...args: unknown[]) => {
+        warns.push(args.map(String).join(' '));
+      };
+      try {
+        fn();
+      } finally {
+        console.warn = original;
+      }
+      return warns;
+    }
+
+    it('does not call console.warn for hello?', () => {
+      const warns = captureWarns(() => {
+        toHonocoroko('hello?');
+      });
+      assert.deepStrictEqual(warns, []);
+    });
+
+    it('does not call console.warn for unmapped chars in default mode', () => {
+      const warns = captureWarns(() => {
+        toHonocoroko('test?', { convertSpecialChars: true });
+        fromHonocoroko('ꦲꦤ!');
+      });
+      assert.deepStrictEqual(warns, []);
+    });
+
+    it('keeps unmapped characters when strict is false', () => {
+      assert.ok(toHonocoroko('apa§', { convertSpecialChars: true }).includes('§'));
+    });
+
+    it('throws in strict mode for an unmapped character', () => {
+      assert.throws(
+        () => toHonocoroko('apa§', { convertSpecialChars: true, strict: true }),
+        /No mapping found for character: § \(U\+00A7\)/
+      );
+      assert.throws(
+        () => fromHonocoroko('ꦲ§', { convertSpecialChars: true, strict: true }),
+        /No mapping found for character: §/
+      );
+    });
+
+    it('does not throw in strict mode for preserved special chars', () => {
+      assert.strictEqual(toHonocoroko('hana?', { strict: true }), 'ꦲꦤ?');
+    });
+  });
+
   describe('fromHonocoroko', () => {
     it('maps basic aksara back to Latin CV syllables', () => {
       assert.strictEqual(fromHonocoroko('ꦲ'), 'ha');
