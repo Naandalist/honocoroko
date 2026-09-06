@@ -1,4 +1,4 @@
-// Exact expected outputs for the current 1.2.x forward mapper.
+// Exact expected outputs for the current forward mapper.
 export interface Fixture {
   latin: string;
   javanese: string;
@@ -20,6 +20,9 @@ export const toHonocorokoFixtures: Fixture[] = [
   { latin: 'bisa', javanese: 'ꦧꦶꦱ' },
   { latin: 'biso', javanese: 'ꦧꦶꦱꦺꦴ' },
   { latin: 'bakso', javanese: 'ꦧꦏ꧀ꦱꦺꦴ' },
+  { latin: 'wong', javanese: 'ꦮꦺꦴꦁ' },
+  { latin: 'besar', javanese: 'ꦧꦼꦱꦂ' },
+  { latin: 'rumah', javanese: 'ꦫꦸꦩꦃ' },
   { latin: 'nga', javanese: 'ꦔ' },
   { latin: 'nya', javanese: 'ꦚ' },
   { latin: 'dha', javanese: 'ꦝ' },
@@ -49,8 +52,7 @@ export const workingRoundTrip: string[] = [
 
 export const workingSyllableRoundTrip: string[] = [
   'bi', 'bu', 'be', 'bo', 'bisa', 'biso', 'bakso',
+  'wong', 'besar', 'rumah',
 ];
 
-export const brokenRoundTrip: Array<{ latin: string; reason: string }> = [
-  { latin: 'wong', reason: 'final ng is not cecak (#10)' },
-];
+export const brokenRoundTrip: Array<{ latin: string; reason: string }> = [];

@@ -19,9 +19,7 @@ npm install @naandalist/honocoroko
 
 Requires Node.js 18+.
 
-## What 1.2.x actually does
-
-Forward mapping (`toHonocoroko`) is the reliable direction. These outputs are covered by tests:
+## What it does
 
 ```typescript
 import { toHonocoroko, fromHonocoroko } from '@naandalist/honocoroko';
@@ -29,33 +27,25 @@ import { toHonocoroko, fromHonocoroko } from '@naandalist/honocoroko';
 toHonocoroko('hanacaraka'); // ꦲꦤꦕꦫꦏ
 toHonocoroko('bisa');       // ꦧꦶꦱ
 toHonocoroko('bakso');      // ꦧꦏ꧀ꦱꦺꦴ
-toHonocoroko('wong');       // ꦮꦺꦴꦤ꧀ꦒ
-toHonocoroko('hana 123');   // ꦲꦤ ꧑꧒꧓
+toHonocoroko('wong');       // ꦮꦺꦴꦁ
+toHonocoroko('besar');      // ꦧꦼꦱꦂ
+toHonocoroko('rumah');      // ꦫꦸꦩꦃ
+
+fromHonocoroko('ꦧꦶ');                 // "bi"
+fromHonocoroko(toHonocoroko('bisa'));  // "bisa"
+fromHonocoroko(toHonocoroko('wong'));  // "wong"
 ```
 
-`fromHonocoroko` is a character lookup, not a syllable parser. Open syllables like `ꦲꦤꦕꦫꦏ` → `hanacaraka` work. Closed syllables and sandhangan do not fold back correctly yet:
+`nga` stays Aksara Nga (`ꦔ`), not cecak.
 
-```typescript
-fromHonocoroko(toHonocoroko('bisa'));  // "baisa", not "bisa"
-fromHonocoroko(toHonocoroko('bakso')); // "baxo", not "bakso"
-fromHonocoroko(toHonocoroko('wong'));  // "waona/ga", not "wong"
-```
-
-That reverse path is the 1.3.0 work in [#9](https://github.com/Naandalist/honocoroko/issues/9).
-
-## Not in 1.2.x
-
-These exist as unused mapping tables or are simply unimplemented. Do not expect them:
+## Not implemented yet
 
 | Missing | Planned |
 |---|---|
 | Aksara Murda | [#11](https://github.com/Naandalist/honocoroko/issues/11) |
 | Aksara Swara as a first-class option | [#11](https://github.com/Naandalist/honocoroko/issues/11) |
-| Final `-ng` / `-r` / `-h` as cecak, layar, wignyan | [#10](https://github.com/Naandalist/honocoroko/issues/10) |
 | Cakra / pengkal | [#12](https://github.com/Naandalist/honocoroko/issues/12) |
 | `e` vs `é` documented as taling vs pepet | [#12](https://github.com/Naandalist/honocoroko/issues/12) |
-
-Today `wong` becomes `ꦮꦺꦴꦤ꧀ꦒ` (wa + o + na + pangkon + ga), not `ꦮꦺꦴꦁ`.
 
 ## Usage
 
@@ -71,12 +61,13 @@ CommonJS:
 const { toHonocoroko, fromHonocoroko, transliterate } = require('@naandalist/honocoroko');
 ```
 
-## Features (1.2.x)
+## Features
 
 - ESM and CommonJS
 - Aksara Nglegena (basic consonants)
-- Sandhangan on the **forward** path (`bi` → `ꦧꦶ`)
+- Sandhangan on both paths (`bi` ↔ `ꦧꦶ`)
 - Pangkon between consonants (`bakso` → `ꦧꦏ꧀ꦱꦺꦴ`)
+- Syllable-final `-ng` / `-r` / `-h` as cecak, layar, wignyan
 - Javanese numerals `0-9` → `꧐-꧙`
 - Javanese punctuation `,` `.` `:`
 - Phonetic Latin extras: `f` `v` `z` `q` `x`
@@ -160,7 +151,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 3. Merge to `main`.
 4. Create a GitHub Release whose tag is `vX.Y.Z` (example: `v1.2.2`).
 
-`publish.yml` runs only on that published Release. Tag and `package.json` version must match.
+`publish.yml` runs only on that published Release. Tag and `package.json` version must match. Auth is npm Trusted Publishing (OIDC), not `NPM_TOKEN`.
 
 ## License
 
